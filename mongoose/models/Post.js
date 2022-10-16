@@ -7,8 +7,9 @@ const postSchema = new Schema(
     uid: { type: String, require: true, unique: true },
     title: { type: String },
     age: { type: Number, default: 1 },
+    id: { type: Schema.Types.ObjectId },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey:false }
 );
 
 postSchema.statics.create = function (paylaod) {

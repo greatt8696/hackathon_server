@@ -13,81 +13,8 @@ initDb = function () {
     });
 };
 
-mongoDb.Promise = global.Promise;
+// mongoDb.Promise = global.Promise;
 
-Post.insertMany([
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-]);
 
-Post.findById({ uid: "AS3Mxf8D0Gr6nRU19278" });
 
 module.exports = { mongoDb, initDb };
