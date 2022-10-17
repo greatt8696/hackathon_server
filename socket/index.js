@@ -1,12 +1,21 @@
 require("dotenv").config();
 const { Server } = require("socket.io");
-const SOCKET_PORT = process.env.SOCKET_PORT;
-const SocketServer = new Server(SOCKET_PORT);
+const {
+  UserSocket,
+  TradeSocket,
+  TechSocket,
+  TreeSocket,
+} = require("./nameSpace");
 
-SocketServer.on("connection", (socket) => {
+const SOCKET_PORT = process.env.SOCKET_PORT;
+const socketServer = new Server(SOCKET_PORT);
+
+socketServer.on("connection", (socket) => {
+  //user socket when success connection
   socket.on("helloclient", (arg) => {
     console.log("helloclient 받음", arg);
   });
+
   setInterval(() =>
     socket.emit("hello", [100000000 * Math.random(), Date(Date.now())], 1)
   );
@@ -25,9 +34,14 @@ SocketServer.on("connection", (socket) => {
 
   socket.on("joinRoom", ({ joinRoom }) => {
     socket.join(joinRoom);
-    SocketServer.to(joinRoom).emit("helloTestRoom", "helloTestRoom");
+    socketServer.to(joinRoom).emit("helloTestRoom", "helloTestRoom");
     console.log(joinRoom);
   });
 });
 
-module.exports = { SocketServer };
+new UserSocket(socketServer);
+new TradeSocket(socketServer);
+new TechSocket(socketServer);
+new TreeSocket(socketServer);
+
+module.exports = { socketServer };
