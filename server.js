@@ -10,11 +10,13 @@ const app = express();
 
 const recycleRouter = require("./routers/recycle");
 
-const PORT = "3600";
+const SERVER_PORT = process.env.SERVER_PORT;
 
-const { mongoDb, initDb } = require("./mongoose/dbManager");
+const { mongoDb, initDb } = require("./mongoose");
 
-const { Server } = require("socket.io");
+const socketServer = require("./socket");
+
+console.log("Socket : ");
 
 app.use(express.static("public"));
 
@@ -24,131 +26,11 @@ app.use(bodyParser.json());
 
 app.use("/recycle", recycleRouter);
 
-app.listen(PORT, () => {
+app.listen(SERVER_PORT, () => {
   console.log("Running Server");
 });
 
-const io = new Server(3000);
-
-io.on("connection", (socket) => {
-  socket.on("helloclient", (arg) => {
-    console.log("helloclient 받음", arg);
-  });
-  setInterval(() =>
-    socket.emit(
-      "hello",
-      [100000000 * Math.random(), Date(Date.now())],
-      1
-    )
-  );
-
-  setInterval(() =>
-    socket.emit(
-      "hello2",
-      [100000000 * Math.random(), Date(Date.now())],
-      1
-    )
-  );
-
-  setInterval(() =>
-    socket.emit(
-      "hello3",
-      [100000000 * Math.random(), Date(Date.now())],
-      1
-    )
-  );
-
-  setInterval(() =>
-    socket.emit(
-      "hello4",
-      [100000000 * Math.random(), Date(Date.now())],
-      1
-    )
-  );
-  
-  socket.on("joinRoom", ({ joinRoom }) => {
-    socket.join(joinRoom);
-    io.to(joinRoom).emit("helloTestRoom", "helloTestRoom");
-    console.log(joinRoom);
-  });
-});
-
 initDb();
-
-Post.insertMany([
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-  {
-    uid: createUid(),
-    title: "뀨뀨뀨",
-    age: parseInt(36 * Math.random()),
-  },
-]);
-
-Post.findById({ uid: "AS3Mxf8D0Gr6nRU19278" });
 
 app.get("/user", async (req, res) => {
   const user = await Post.find({});
