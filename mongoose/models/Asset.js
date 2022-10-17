@@ -8,6 +8,7 @@ const assetSchema = new Schema({
     required: true,
     auto: true,
   },
+  assetUid: { type: String },
   state: { type: String, default: "normal" }, // normal, researching, funding
   igmUrl: String, // "https://~~~"
   type: String, // recycle, tech, tree

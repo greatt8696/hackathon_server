@@ -1,3 +1,12 @@
 {
-  "User": ""
+  "Asset": [
+    {
+      "state": "normal",
+      "imgUrl": "https://",
+      "orign": "",
+      "assetName": "플라스틱오일기술#123",
+      "issuer": "testUid123",
+      "totalCapital": "  "
+    }
+  ]
 }
