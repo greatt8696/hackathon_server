@@ -34,6 +34,7 @@ initDb();
 const test = require("./mongoose/models/initDb.json");
 
 console.log("initDb", test);
+console.log(Date.now());
 
 app.get("/user", async (req, res) => {
   const user = await Post.find({});

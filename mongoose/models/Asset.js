@@ -14,11 +14,11 @@ const assetSchema = new Schema({
   type: String, // recycle, tech, tree
   origin: { type: Schema.Types.ObjectId },
   assetName: String, // 플라스틱오일기술#123
-  date: { type: Date, default: Date.now },
+  createddate: { type: Date, default: Date.now },
   issuer: { type: Schema.Types.ObjectId },
   totalCapital: Number, // 자본금(목표)
-  fundingRate: Number, // 0% ~ 100%
-  spend: Number, // 0 ~ totalCapital 소비량
+  fundingRate: { type: Number, default: 0 }, // 0% ~ 100%
+  spend: { type: Number, default: 0 }, // 0 ~ totalCapital 소비량
 });
 
 assetSchema.statics.create = function (paylaod) {
