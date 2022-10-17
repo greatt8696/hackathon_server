@@ -1,15 +1,26 @@
 const mongoDb = require("mongoose");
-
 const { Schema } = mongoDb;
 
-const organizationSchema = new Schema(
-  {
-    uid: { type: String, require: true, unique: true },
-    title: { type: String },
-    age: { type: Number, default: 1 },
+const position = new Schema({ lat: { type: Number }, lng: { type: Number } });
+
+const organizationSchema = new Schema({
+  organizationId: {
+    type: Schema.Types.ObjectId,
+    index: true,
+    required: true,
+    auto: true,
   },
-  { timestamps: true, versionKey: false }
-);
+  name: String, // *
+  igmUrl: String, // "https://~~~"
+  businessNo: String, //123-123-1234
+  type: String, // public,private
+  businnessRole: String, // origin, collector, selector, disposal
+  contract: {
+    email: { ref: String }, // asdf@gmail.com
+    contract: { ref: String }, // +82-02-1234-1234
+  },
+  position: [position], //  { lat: 12.12345, lng: 12.12345 }
+});
 
 organizationSchema.statics.create = function (paylaod) {
   const organization = new this(paylaod);

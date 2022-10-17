@@ -1,28 +1,28 @@
 const mongoDb = require("mongoose");
-
 const { Schema } = mongoDb;
 
-const wallet = {
-  coin: "",
-  code: "",
-  ticker: "",
-  type: "",
-  balance: 0,
-  origin: Schema.Types.ObjectId,
-};
+const wallet = new Schema({
+  assetName: String, // ex) Plastic, glass, ...
+  ticker: String, // ex) PLA, PAPER, PE, PELLET_PP...
+  balance: Number, // ex) 1000000
+  assetOrigin: {
+    assetType: String,
+    assetId: { type: Schema.Types.ObjectId },
+  },
+});
 
 const UserSchema = new Schema(
   {
-    id: {
+    userId: {
       type: Schema.Types.ObjectId,
       index: true,
       required: true,
       auto: true,
     },
-    name: { type: String },
-    email: { type: String },
-    imgUrl: { type: String },
-    age: { type: Number, default: 1 },
+    name: String,
+    email: String,
+    imgUrl: String,
+    organizationId: { type: Schema.Types.ObjectId },
     wallet: { type: [wallet], default: [{}] },
   },
   { timestamps: true, versionKey: false }

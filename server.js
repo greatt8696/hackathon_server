@@ -1,5 +1,4 @@
 require("dotenv").config();
-const { Post } = require("./mongoose/models/Post");
 const { createUid } = require("./util/createRandom");
 
 const express = require("express");
@@ -31,6 +30,10 @@ app.listen(SERVER_PORT, () => {
 });
 
 initDb();
+
+const test = require("./mongoose/models/initDb.json");
+
+console.log("initDb", test);
 
 app.get("/user", async (req, res) => {
   const user = await Post.find({});
