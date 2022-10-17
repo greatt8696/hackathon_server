@@ -2,12 +2,28 @@ const mongoDb = require("mongoose");
 
 const { Schema } = mongoDb;
 
+const wallet = {
+  coin: "",
+  code: "",
+  ticker: "",
+  type: "",
+  balance: 0,
+  origin: Schema.Types.ObjectId,
+};
+
 const UserSchema = new Schema(
   {
-    id: { type: Schema.Types.ObjectId },
-    title: { type: String },
+    id: {
+      type: Schema.Types.ObjectId,
+      index: true,
+      required: true,
+      auto: true,
+    },
+    name: { type: String },
+    email: { type: String },
+    imgUrl: { type: String },
     age: { type: Number, default: 1 },
-    wallet: { type: [Schema.Types.ObjectId], default: [{}] },
+    wallet: { type: [wallet], default: [{}] },
   },
   { timestamps: true, versionKey: false }
 );
@@ -26,6 +42,10 @@ UserSchema.statics.updateByUid = function (id, payload) {
 };
 
 UserSchema.statics.deleteByUid = function (id) {
+  return this.remove({ id });
+};
+
+UserSchema.statics.getWalletByid = function (id) {
   return this.remove({ id });
 };
 
