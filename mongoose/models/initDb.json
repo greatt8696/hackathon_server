@@ -6,7 +6,10 @@
       "orign": "",
       "assetName": "플라스틱오일기술#123",
       "issuer": "testUid123",
-      "totalCapital": "  "
+      "createddate": 1665996162986,
+      "totalCapital": 80000000000,
+      "fundingRate": 0,
+      "spend": 0
     }
   ]
 }
