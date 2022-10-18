@@ -13,9 +13,16 @@ const wallet = new Schema({
 
 const UserSchema = new Schema(
   {
-    userId: { type: String },
+    userId: {
+      type: Schema.Types.ObjectId,
+      index: true,
+      required: true,
+      auto: true,
+    },
     name: String,
-    organizationId: String,
+    email: String,
+    imgUrl: String,
+    organizationId: { type: Schema.Types.ObjectId },
     wallet: { type: [wallet], default: [{}] },
   },
   { timestamps: true, versionKey: false }

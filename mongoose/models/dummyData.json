@@ -1,0 +1,52 @@
+{
+  "User": [
+    {
+      "userId": "유저테스트ID_1",
+      "name": "1_유저뀨뀨뀨",
+      "organizationId": "회사테스트ID_1",
+      "wallet": [
+        {
+          "assetName": "분쇄기술#123",
+          "ticker": "BRK",
+          "balance": 100000,
+          "assetOrigin": { "assetType": "Tech", "assetId": "에셋테스트ID_2" }
+        }
+      ]
+    }
+  ],
+  "Asset": [
+    {
+      "assetId": "에셋테스트ID_1",
+      "state": "normal",
+      "imgUrl": "https://",
+      "orign": "",
+      "assetName": "플라스틱오일기술#123",
+      "createddate": 1665996162986,
+      "totalCapital": 100000,
+      "fundingRate": 0,
+      "spend": 0
+    },
+    {
+      "assetId": "에셋테스트ID_2",
+      "state": "researching",
+      "imgUrl": "https://",
+      "orign": "",
+      "assetName": "분쇄기술#123",
+      "createddate": 1665996162986,
+      "totalCapital": 200000,
+      "fundingRate": 0,
+      "spend": 0
+    },
+    {
+      "assetId": "에셋테스트ID_3",
+      "state": "normal",
+      "imgUrl": "https://",
+      "orign": "",
+      "assetName": "분쇄기술#123",
+      "createddate": 1665996162986,
+      "totalCapital": 200000,
+      "fundingRate": 0,
+      "spend": 0
+    }
+  ]
+}

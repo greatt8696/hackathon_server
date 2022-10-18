@@ -94,4 +94,38 @@ const createNftId = () => {
   return uid.join("") + toDay;
 };
 
-module.exports = { createUid, createNftId };
+const {
+  mongo: { ObjectId },
+} = require("mongoose");
+
+const OBJECTID_TABLE = [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  0,
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+];
+
+const createObjectId = () => {
+  const slot = new Array(24).fill("");
+  return ObjectId(
+    slot
+      .map(
+        () => OBJECTID_TABLE[parseInt(OBJECTID_TABLE.length * Math.random())]
+      )
+      .join("")
+  );
+};
+
+module.exports = { createUid, createNftId, createObjectId };

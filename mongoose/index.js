@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const mongoDb = require("mongoose");
 const { createUid } = require("../util/createRandom");
 const { Organization, User, Asset, Recycle } = require("./models");
