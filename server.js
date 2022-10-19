@@ -15,7 +15,7 @@ const { mongoDb, initDb } = require("./mongoose");
 
 const socketServer = require("./socket");
 
-console.log("Socket : ");
+console.log("Socket : ", socketServer);
 
 app.use(express.static("public"));
 
@@ -39,4 +39,5 @@ console.log(Date.now());
 app.get("/user", async (req, res) => {
   const user = await Post.find({});
   res.send(user);
+  8696;
 });
