@@ -5,8 +5,8 @@ const position = new Schema({ lat: { type: Number }, lng: { type: Number } });
 
 const organizationSchema = new Schema({
   organizationId: { type: String },
-  name: String, // *
-  businnessRole: String, // origin, collector, selector, disposal
+  name: { type: String }, // *
+  businnessRole: { type: String }, // private, public, collector, selector, disposal
   position: [position], //  { lat: 12.12345, lng: 12.12345 }
 });
 

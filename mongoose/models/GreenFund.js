@@ -4,13 +4,11 @@ const { Schema } = mongoDb;
 const greenFundSchema = new Schema({
   greenFundId: { type: String },
   greenFundUid: { type: String },
-  state: { type: String, default: "normal" }, // normal, researching, funding
-  type: String, // recycle, tech, tree
-  origin: { type: String },
-  greenFundName: String, // 플라스틱오일기술#123
+  state: { type: String, default: "pending" }, // pending, decisioning, funding, Proceeding
+  greenFundName: { type: String }, // 플라스틱오일기술#123
   createdDate: { type: Date, default: Date.now },
   issuer: { type: String },
-  totalCapital: Number, // 자본금(목표)
+  totalCapital: { type: Number }, // 자본금(목표)
   fundingRate: { type: Number, default: 0 }, // 0% ~ 100%
 });
 
