@@ -35,5 +35,4 @@ connectDb().then(() => {
 app.get("/user", async (req, res) => {
   const user = await Post.find({});
   res.send(user);
-  8696;
 });
