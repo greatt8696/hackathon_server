@@ -3,7 +3,7 @@ require("dotenv").config();
 class TechSocket {
   constructor(socket) {
     this.techSocket = socket.of("/tech");
-    console.log("Socket : /tech init");
+    console.log("Socket/tech init");
     this.init();
   }
 

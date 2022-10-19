@@ -3,7 +3,7 @@ require("dotenv").config();
 class UserSocket {
   constructor(socket) {
     this.userSocket = socket.of("/user");
-    console.log("Socket : /user init");
+    console.log("Socket/user init");
     this.init();
   }
 

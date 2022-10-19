@@ -11,7 +11,7 @@ const recycleRouter = require("./routers/recycle");
 
 const SERVER_PORT = process.env.SERVER_PORT;
 
-const { mongoDb, initDb } = require("./mongoose");
+const { connectDb, initDb } = require("./mongoose");
 
 const socketServer = require("./socket");
 
@@ -29,13 +29,9 @@ app.listen(SERVER_PORT, () => {
   console.log("Running Server");
 });
 
-initDb();
-
-const test = require("./mongoose/models/initDb.json");
-
-console.log("initDb", test);
-console.log(Date.now());
-
+connectDb().then(() => {
+  initDb();
+});
 app.get("/user", async (req, res) => {
   const user = await Post.find({});
   res.send(user);
