@@ -16,6 +16,7 @@ const UserSchema = new Schema(
     userId: { type: String },
     name: String,
     organizationId: String,
+    createdDate: { type: Date, default: Date.now },
     wallet: { type: [wallet], default: [{}] },
   },
   { timestamps: true, versionKey: false }
@@ -36,6 +37,10 @@ UserSchema.statics.updateByUid = function (id, payload) {
 
 UserSchema.statics.deleteByUid = function (id) {
   return this.remove({ id });
+};
+
+UserSchema.statics.deleteAll = function () {
+  return this.deleteMany({});
 };
 
 UserSchema.statics.getWalletByid = function (id) {

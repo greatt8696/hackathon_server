@@ -19,6 +19,9 @@ organizationSchema.statics.findAll = function () {
   return this.find({});
 };
 
+organizationSchema.statics.deleteAll = function () {
+  return this.deleteMany({});
+};
 organizationSchema.statics.updateByUid = function (id, payload) {
   return this.findOneAndUpdate({ id }, payload, { new: true });
 };

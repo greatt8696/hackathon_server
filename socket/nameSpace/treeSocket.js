@@ -3,7 +3,7 @@ require("dotenv").config();
 class TreeSocket {
   constructor(socket) {
     this.treeSocket = socket.of("/tree");
-    console.log("Socket : /tree init");
+    console.log("Socket/tree init");
     this.init();
   }
 

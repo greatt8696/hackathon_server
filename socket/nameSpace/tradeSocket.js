@@ -3,7 +3,7 @@ require("dotenv").config();
 class TradeSocket {
   constructor(socket) {
     this.tradeSocket = socket.of("/trade");
-    console.log("Socket : /trade init");
+    console.log("Socket/trade init");
     this.init();
   }
 
