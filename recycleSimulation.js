@@ -23,9 +23,6 @@ const { compare, encrypt } = require("./util/crypto");
         pwd: hashedPwd,
         name: "유저1",
         역할: "지자체",
-        보유폐기물: 3000,
-        보고서: ["보고서ID#1"],
-        폐기물내역: ["재활용트랜잭션1", "재활용트랜잭션2", "재활용트랜잭션3"],
       },
       {
         id: "테스트용id2",
@@ -34,10 +31,44 @@ const { compare, encrypt } = require("./util/crypto");
         pwd: hashedPwd,
         name: "유저2",
         역할: "수거",
+      },
+    ];
+
+    const wallet = [
+      {
+        id: "테스트용uid1",
+        coins: [
+          {
+            ticker: "GREEN",
+            name: "그린코인",
+            balance: 10000000,
+          },
+          {
+            ticker: "COMP_PET",
+            name: "압축 PET",
+            exchange: "EXC_SEO",
+            position: { lat: 11.111, lng: 11.111 },
+            balance: 500,
+          },
+        ],
+      },
+    ];
+
+    const recycleLedger = [
+      {
+        id: "테스트용uid1",
+        보고서: ["보고서ID#1"],
+        보유폐기물: 3000,
+        폐기물내역: ["재활용트랜잭션1", "재활용트랜잭션2", "재활용트랜잭션3"],
+      },
+      {
+        id: "테스트용uid2",
+        보고서: ["보고서ID#2"],
         보유폐기물: 3000,
         폐기물내역: ["재활용트랜잭션4", "재활용트랜잭션5"],
       },
     ];
+
     const recycle = [
       {
         id: "재활용트랜잭션1",
