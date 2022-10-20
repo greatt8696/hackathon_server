@@ -1,23 +1,16 @@
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 
-const wallet = new Schema({
-  assetName: { type: String }, // ex) Plastic, glass, ...
-  ticker: { type: String }, // ex) PLA, PAPER, PE, PELLET_PP...
-  balance: { type: Number }, // ex) 1000000
-  assetOrigin: {
-    assetType: { type: String },
-    assetId: { type: Schema.Types.ObjectId },
-  },
-});
-
 const UserSchema = new Schema(
   {
     userId: { type: String },
+    uid: { type: String },
+    email: { type: String },
+    pwd: { type: String },
     name: { type: String },
-    organizationId: { type: String },
-    createdDate: { type: Date, default: Date.now },
-    wallet: { type: [wallet], default: [{}] },
+    role: { type: String },
+    recycleList: [{ type: String }],
+    wallet: { type: String },
   },
   { timestamps: true, versionKey: false }
 );

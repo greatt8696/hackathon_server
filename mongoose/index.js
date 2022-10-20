@@ -2,13 +2,7 @@ require("dotenv").config();
 
 const mongoDb = require("mongoose");
 const { createUid } = require("../util/createRandom");
-const {
-  Organization,
-  User,
-  TechFund,
-  GreenFund,
-  Recycle,
-} = require("./models");
+const { Wallet, User, TechFund, GreenFund, Recy } = require("./models");
 
 const connectDb = function () {
   return mongoDb
@@ -22,7 +16,7 @@ const connectDb = function () {
 };
 
 const initDb = async function () {
-  const deletedOrganization = await Organization.deleteAll();
+  const deletedWallet = await Wallet.deleteAll();
   const deletedUser = await User.deleteAll();
   const deletedTechFund = await TechFund.deleteAll();
   const deletedGreenFund = await GreenFund.deleteAll();

@@ -1,26 +1,25 @@
 const mongoDb = require("mongoose");
+const {
+  fundingHistroySchema,
+  mileStoneSchema,
+  positionSchema,
+} = require("./OtherSchema");
 const { Schema } = mongoDb;
-
-const mileStoneSchema = new Schema({
-  mileStoneId: { type: String },
-  title: { type: String },
-  content: { type: String },
-  dataUrl: { type: String },
-  techFundId: { type: String },
-  state: { type: String }, // expected, Resolving, success , failure
-});
 
 const techFundSchema = new Schema({
   techFundId: { type: String },
-  techFundUid: { type: String },
-  state: { type: String, default: "pending" }, // pending, decisioning, funding, researching, Proceeding
-  techFundName: { type: String }, // 플라스틱오일기술#123
+  name: { type: String },
+  state: { type: String }, // 검토, 펀딩중, 펀딩완료, 사업진행중
+  organizer: { type: String },
+  basePoint: positionSchema,
+  techType: { type: String }, // 가공, 처리,
+  rationales: [{ type: String }],
+  mileStones: [mileStoneSchema],
   createdDate: { type: Date, default: Date.now },
-  issuer: { type: String },
-  totalCapital: Number, // 자본금(목표)
-  fundingRate: { type: Number, default: 0 }, // 0% ~ 100%
-  spend: { type: Number, default: 0 }, // 0 ~ totalCapital 소비량
-  mileStone: { type: Object, default: [{}] },
+  endDate: { type: Date, default: Date.now },
+  targetAmount: { type: Number },
+  currAmount: { type: Number },
+  fundHistories: [fundingHistroySchema],
 });
 
 techFundSchema.statics.create = function (paylaod) {

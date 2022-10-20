@@ -1,15 +1,26 @@
 const mongoDb = require("mongoose");
+const {
+  fundingHistroySchema,
+  positionSchema,
+  rangeSchema,
+} = require("./OtherSchema");
 const { Schema } = mongoDb;
 
 const greenFundSchema = new Schema({
   greenFundId: { type: String },
-  greenFundUid: { type: String },
-  state: { type: String, default: "pending" }, // pending, decisioning, funding, Proceeding
-  greenFundName: { type: String }, // 플라스틱오일기술#123
+  state: { type: String },
+  name: { type: String },
+  organizer: { type: String },
+  basePoint: positionSchema,
+  section: { type: "svg", path: "" },
+  treeType: { type: String },
+  age: rangeSchema, // 년
+  height: rangeSchema, // 미터
   createdDate: { type: Date, default: Date.now },
-  issuer: { type: String },
-  totalCapital: { type: Number }, // 자본금(목표)
-  fundingRate: { type: Number, default: 0 }, // 0% ~ 100%
+  endDate: { type: Date, default: Date.now },
+  targetAmount: { type: Number },
+  currAmount: { type: Number },
+  fundHistories: [fundingHistroySchema],
 });
 
 greenFundSchema.statics.create = function (paylaod) {

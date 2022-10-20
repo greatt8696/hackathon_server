@@ -1,7 +1,7 @@
 const { User } = require("./User");
 const { TechFund } = require("./TechFund");
 const { GreenFund } = require("./GreenFund");
-const { Recycle } = require("./Recycle");
-const { Organization } = require("./Organization");
+const { RecycleLedger } = require("./RecycleLedger");
+const { Wallet } = require("./Wallet");
 
-module.exports = { Organization, User, TechFund, GreenFund, Recycle };
+module.exports = { Wallet, User, TechFund, GreenFund, RecycleLedger };

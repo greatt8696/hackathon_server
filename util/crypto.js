@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 
-const REPEAT_NUM = 5;
+const REPEAT_NUM = 8;
 
 const encrypt = function (pwd) {
   return new Promise((resolve, reject) => {
