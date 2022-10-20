@@ -2,27 +2,21 @@ const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 
 const wallet = new Schema({
-  assetName: String, // ex) Plastic, glass, ...
-  ticker: String, // ex) PLA, PAPER, PE, PELLET_PP...
-  balance: Number, // ex) 1000000
+  assetName: { type: String }, // ex) Plastic, glass, ...
+  ticker: { type: String }, // ex) PLA, PAPER, PE, PELLET_PP...
+  balance: { type: Number }, // ex) 1000000
   assetOrigin: {
-    assetType: String,
+    assetType: { type: String },
     assetId: { type: Schema.Types.ObjectId },
   },
 });
 
 const UserSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      index: true,
-      required: true,
-      auto: true,
-    },
-    name: String,
-    email: String,
-    imgUrl: String,
-    organizationId: { type: Schema.Types.ObjectId },
+    userId: { type: String },
+    name: { type: String },
+    organizationId: { type: String },
+    createdDate: { type: Date, default: Date.now },
     wallet: { type: [wallet], default: [{}] },
   },
   { timestamps: true, versionKey: false }
@@ -43,6 +37,10 @@ UserSchema.statics.updateByUid = function (id, payload) {
 
 UserSchema.statics.deleteByUid = function (id) {
   return this.remove({ id });
+};
+
+UserSchema.statics.deleteAll = function () {
+  return this.deleteMany({});
 };
 
 UserSchema.statics.getWalletByid = function (id) {
