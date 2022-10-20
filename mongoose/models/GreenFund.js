@@ -12,7 +12,7 @@ const greenFundSchema = new Schema({
   name: { type: String },
   organizer: { type: String },
   basePoint: positionSchema,
-  section: { type: "svg", path: "" },
+  section: { type: Object },
   treeType: { type: String },
   age: rangeSchema, // 년
   height: rangeSchema, // 미터

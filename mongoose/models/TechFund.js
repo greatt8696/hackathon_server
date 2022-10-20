@@ -13,7 +13,7 @@ const techFundSchema = new Schema({
   organizer: { type: String },
   basePoint: positionSchema,
   techType: { type: String }, // 가공, 처리,
-  rationales: [{ type: String }],
+  rationales: [{ type: Object }],
   mileStones: [mileStoneSchema],
   createdDate: { type: Date, default: Date.now },
   endDate: { type: Date, default: Date.now },

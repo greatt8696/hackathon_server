@@ -2,7 +2,23 @@ require("dotenv").config();
 
 const mongoDb = require("mongoose");
 const { createUid } = require("../util/createRandom");
-const { Wallet, User, TechFund, GreenFund, Recy } = require("./models");
+const {
+  Wallet,
+  User,
+  TechFund,
+  GreenFund,
+  RecycleLedger,
+  RecycleTransactions,
+} = require("./models");
+
+const {
+  user,
+  wallet,
+  recycleLedger,
+  recycle,
+  techFund,
+  greenFund,
+} = require("../recycleSimulation");
 
 const connectDb = function () {
   return mongoDb
@@ -20,7 +36,14 @@ const initDb = async function () {
   const deletedUser = await User.deleteAll();
   const deletedTechFund = await TechFund.deleteAll();
   const deletedGreenFund = await GreenFund.deleteAll();
-  const deletedRecycle = await Recycle.deleteAll();
+  const deletedRecycle = await RecycleLedger.deleteAll();
+  const recycleTransactions = await RecycleTransactions.deleteAll();
+  Wallet.insertMany(wallet);
+  User.insertMany(user);
+  TechFund.insertMany(techFund);
+  GreenFund.insertMany(greenFund);
+  RecycleLedger.insertMany(recycleLedger);
+  RecycleTransactions.insertMany(recycleLedger);
   console.log("db init 초기화 완료");
 };
 
