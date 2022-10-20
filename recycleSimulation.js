@@ -1,6 +1,6 @@
 const { compare, encrypt } = require("./util/crypto");
 
-const userState = [
+const user = [
   {
     userId: "테스트용id1",
     uid: "테스트용uid1",
@@ -51,8 +51,8 @@ const wallet = [
     ],
   },
   {
-    id: "지갑테스트용id2",
-    uid: "테스트용uid2",
+    walletId: "지갑테스트용id2",
+    onwer: "테스트용uid2",
     coins: [
       {
         ticker: "GREEN",
@@ -77,9 +77,9 @@ const wallet = [
   },
 ];
 
-const recycleLedger = [
+const recycleHistory = [
   {
-    recycleLedgerId: "테스트용uid1",
+    recycleHistoryId: "테스트용uid1",
     ownWastes: [
       { name: "플라스틱", weight: 2000 },
       { name: "고철캔", weight: 1500 },
@@ -88,7 +88,7 @@ const recycleLedger = [
     recycleHistories: ["재활용트랜잭션1", "재활용트랜잭션2", "재활용트랜잭션3"],
   },
   {
-    recycleLedgerId: "테스트용uid2",
+    recycleHistoryId: "테스트용uid2",
     ownWastes: [
       { name: "폐지", weight: 222 },
       { name: "플라스틱", weight: 2200 },
@@ -98,7 +98,7 @@ const recycleLedger = [
   },
 ];
 
-const recycle = [
+const recycleTransactions = [
   {
     recycleId: "재활용트랜잭션1",
     type: "발생",
@@ -107,7 +107,7 @@ const recycle = [
     weigth: 9000,
     createdDate: "2022.10.18",
     recycleType: ["플라스틱", "고철캔", "고철"],
-    validity: [{ type: "수량부족", user: "유저1", details: "payload" }],
+    validity: [],
   },
   {
     recycleId: "재활용트랜잭션2",
@@ -131,7 +131,7 @@ const recycle = [
   },
 ];
 
-const GreenFund = [
+const greenFund = [
   {
     greenFundId: "그린펀드1",
     state: "펀딩중", // 검토, 펀딩중, 펀딩완료, 사업진행중
@@ -169,7 +169,7 @@ const GreenFund = [
     ],
   },
 ];
-const TechFund = [
+const techFund = [
   {
     techFundId: "테크펀드id1",
     name: "플라스틱 유전 #12",
@@ -237,3 +237,12 @@ const TechFund = [
     fundHistories: [{ userId: "테스트용uid2", coin: "green", amount: 220000 }],
   },
 ];
+
+module.exports = {
+  user,
+  wallet,
+  recycleLedger,
+  recycleTransactions,
+  techFund,
+  greenFund,
+};
