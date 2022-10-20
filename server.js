@@ -15,7 +15,7 @@ const { connectDb, initDb } = require("./mongoose");
 
 const socketServer = require("./socket");
 
-console.log("Socket : ");
+console.log("Socket : ", socketServer);
 
 app.use(express.static("public"));
 
