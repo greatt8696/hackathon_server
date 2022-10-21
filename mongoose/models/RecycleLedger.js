@@ -5,7 +5,7 @@ const { Schema } = mongoDb;
 const recycleLedgerSchema = new Schema({
   recycleLedgerId: { type: String },
   ownWastes: [ownWasteSchema],
-  recycleHistories: [{ type: String }],
+  recycleTransactionIds: [{ type: String }],
 });
 
 recycleLedgerSchema.statics.create = function (paylaod) {

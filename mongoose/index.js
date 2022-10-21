@@ -8,14 +8,14 @@ const {
   TechFund,
   GreenFund,
   RecycleLedger,
-  RecycleTransactions,
+  RecycleWorldTransactions,
 } = require("./models");
 
 const {
   user,
   wallet,
   recycleLedger,
-  recycle,
+  recycleWorldTransaction,
   techFund,
   greenFund,
 } = require("../recycleSimulation");
@@ -32,18 +32,19 @@ const connectDb = function () {
 };
 
 const initDb = async function () {
-  const deletedWallet = await Wallet.deleteAll();
-  const deletedUser = await User.deleteAll();
-  const deletedTechFund = await TechFund.deleteAll();
-  const deletedGreenFund = await GreenFund.deleteAll();
-  const deletedRecycle = await RecycleLedger.deleteAll();
-  const recycleTransactions = await RecycleTransactions.deleteAll();
+  await Wallet.deleteAll();
+  await User.deleteAll();
+  await TechFund.deleteAll();
+  await GreenFund.deleteAll();
+  await RecycleLedger.deleteAll();
+  await RecycleWorldTransactions.deleteAll();
+
   Wallet.insertMany(wallet);
   User.insertMany(user);
   TechFund.insertMany(techFund);
   GreenFund.insertMany(greenFund);
   RecycleLedger.insertMany(recycleLedger);
-  RecycleTransactions.insertMany(recycleLedger);
+  RecycleWorldTransactions.insertMany(recycleWorldTransaction);
   console.log("db init 초기화 완료");
 };
 

@@ -4,7 +4,7 @@ const {
   UserSocket,
   TradeSocket,
   TechSocket,
-  TreeSocket,
+  GreenSocket,
 } = require("./nameSpace");
 
 const SOCKET_PORT = process.env.SOCKET_PORT;
@@ -42,6 +42,6 @@ socketServer.on("connection", (socket) => {
 new UserSocket(socketServer);
 new TradeSocket(socketServer);
 new TechSocket(socketServer);
-new TreeSocket(socketServer);
+new GreenSocket(socketServer);
 
 module.exports = { socketServer };

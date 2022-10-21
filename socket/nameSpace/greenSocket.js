@@ -1,22 +1,22 @@
 require("dotenv").config();
 
-class TreeSocket {
+class GreenSocket {
   constructor(socket) {
-    this.treeSocket = socket.of("/tree");
-    console.log("Socket/tree init");
+    this.greenSocket = socket.of("/green");
+    console.log("Socket/green init");
     this.init();
   }
 
   init() {
-    this.treeSocket.on("connection", (socket) => {
-      //tree socket when success connection
-      socket.on("treehelloclient", (arg) => {
-        console.log("treehelloclient 받음", arg);
+    this.greenSocket.on("connection", (socket) => {
+      //green socket when success connection
+      socket.on("greenhelloclient", (arg) => {
+        console.log("greenhelloclient 받음", arg);
       });
 
       setInterval(() =>
         socket.emit(
-          "treehello",
+          "greenhello",
           [100000000 * Math.random(), Date(Date.now())],
           1
         )
@@ -24,7 +24,7 @@ class TreeSocket {
 
       setInterval(() =>
         socket.emit(
-          "treehello2",
+          "greenhello2",
           [100000000 * Math.random(), Date(Date.now())],
           1
         )
@@ -32,7 +32,7 @@ class TreeSocket {
 
       setInterval(() =>
         socket.emit(
-          "treehello3",
+          "greenhello3",
           [100000000 * Math.random(), Date(Date.now())],
           1
         )
@@ -40,7 +40,7 @@ class TreeSocket {
 
       setInterval(() =>
         socket.emit(
-          "treehello4",
+          "greenhello4",
           [100000000 * Math.random(), Date(Date.now())],
           1
         )
@@ -49,8 +49,8 @@ class TreeSocket {
       socket.on("joinRoom", ({ joinRoom }) => {
         socket.join(joinRoom);
         SocketServer.to(joinRoom).emit(
-          "treehelloTestRoom",
-          "treehelloTestRoom"
+          "greenhelloTestRoom",
+          "greenhelloTestRoom"
         );
         console.log(joinRoom);
       });
@@ -58,4 +58,4 @@ class TreeSocket {
   }
 }
 
-module.exports = { TreeSocket };
+module.exports = { GreenSocket };

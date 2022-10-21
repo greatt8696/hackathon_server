@@ -9,15 +9,25 @@ const UserSchema = new Schema(
     pwd: { type: String },
     name: { type: String },
     role: { type: String },
-    recycleList: [{ type: String }],
-    wallet: { type: String },
+    recycleLedgerIds: [{ type: String }],
+    walletId: { type: String },
   },
   { timestamps: true, versionKey: false }
 );
 
-UserSchema.statics.create = function (paylaod) {
-  const User = new this(paylaod);
+UserSchema.statics.create = function (payload) {
+  const User = new this(payload);
   return User.save();
+};
+
+UserSchema.statics.createUser = function (payload) {
+  const User = new this(payload);
+  return User.save();
+};
+
+UserSchema.statics.getUserByUid = function (payload) {
+  const { uid } = payload;
+  return this.find({ uid });
 };
 
 UserSchema.statics.findAll = function () {
