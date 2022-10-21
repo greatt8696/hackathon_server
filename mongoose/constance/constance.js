@@ -22,7 +22,11 @@ module.exports = {
     jeolladoExchange: { name: "전라도거래소", ticker: "EXC_JLD" },
     gangwondoExchange: { name: "전라도거래소", ticker: "EXC_GWD" },
   },
-  exchangeWaste: {
+  exchange: {
+    greencoin: {
+      name: "그린코인",
+      ticker: "GREEN",
+    },
     paper: {
       name: "폐지",
       ticker: "PAPE",

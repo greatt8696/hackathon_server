@@ -8,23 +8,42 @@ const {
 } = require("../models");
 
 const constance = require("../constance/constance");
-const { ConnectionStates } = require("mongoose");
-const USER_ROLE = constance.UserRole;
+const USER_ROLE = constance.userRole;
+const {
+  ConnectionStates,
+  mongo: { ObjectId },
+} = require("mongoose");
+const { removeDep } = require("../../util/jsonUtil");
 
-const makeId = (idx) => `테스트용id${idx}`;
-const makeUid = (idx) => `테스트용uid${idx}`;
-const makeRole = () => USER_ROLE[parseInt(Math.random() * USER_ROLE.length)];
-const makeName = (idx, role) => `${role}유저${idx}`;
-
-const wallteId = (idx) => `지갑테스트용id${idx}`;
-const recycleLedgerIds = (idx) => [`재활용장부테스트용${idx}`];
-
-const randomCreateUser = (idx) => {
-  const userId = makeId(idx);
-  const uid = makeUid(idx);
-  const role = makeRole(idx);
-  const name = makeName(idx, role);
-  const pwd = "$2b$08$SHqWBDxEgdvxRtSu0udOBuiog93YoctPuEJz9vksEycc5ttcsiJaq"; //123
-  const randUser = { userId, uid, role, name, pwd, wallteId };
-  User.createUser(randUser);
+const makeId = (idx) => ObjectId();
+const makeCoin = (ticker = "GREEN", name = "그린코인", balance = 0) => {
+  return { ticker, name, balance };
 };
+
+const createNewWallet = (idx) => {
+  const walletId = makeId();
+  const coin = makeCoin();
+  const newWallet = {
+    walletId,
+    coins: [coin],
+  };
+  Wallet.create(newWallet);
+};
+
+const addCoin = async (walletId, ticker) => {
+  const tempId = walletId;
+  const wallet = await Wallet.findOne({ walletId: tempId });
+  const oldcoinList = wallet.coins;
+  const newCoin = makeCoin(ticker);
+  const newCoins = [...oldcoinList, newCoin];
+  console.log("addCoin", { ...wallet, coins: newCoins });
+  const update = await Wallet.replaceOne(
+    { walletId: tempId },
+    { coins: newCoins }
+  );
+
+  const result = await Wallet.findOne({ walletId: tempId });
+  console.log("addCoin", result);
+};
+
+module.exports = { createNewWallet, addCoin };

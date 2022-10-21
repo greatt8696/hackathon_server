@@ -1,16 +1,17 @@
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
+const { ObjectId } = mongoDb.mongo;
 
 const UserSchema = new Schema(
   {
     userId: { type: String },
-    uid: { type: String },
-    email: { type: String },
+    uid: { type: String, index: true },
+    email: { type: String, unique: true },
     pwd: { type: String },
     name: { type: String },
     role: { type: String },
     recycleLedgerIds: [{ type: String }],
-    walletId: { type: String },
+    walletId: { type: ObjectId },
   },
   { timestamps: true, versionKey: false }
 );

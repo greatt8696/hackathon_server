@@ -6,51 +6,72 @@ const mileStoneSchema = new Schema({
   targetDate: { type: Date, default: Date.now },
 });
 
-const recycleTransactionSchema = new Schema({
-  recycleId: { type: String },
-  type: { type: String },
-  from: { type: String },
-  to: { type: String },
-  weigth: { type: Number },
-  createdDate: { type: Date, default: Date.now },
-  recycleType: [{ type: String }],
-  validity: [],
-});
+const recycleTransactionSchema = new Schema(
+  {
+    recycleTransactionId: { type: String, index: true },
+    type: { type: String },
+    from: { type: String },
+    to: { type: String },
+    weigth: { type: Number },
+    createdDate: { type: Date, default: Date.now },
+    recycleType: [{ type: String }],
+    validity: [],
+  },
+  { id: false }
+);
 
-const positionSchema = new Schema({
-  lat: { type: Number },
-  lng: { type: Number },
-});
+const positionSchema = new Schema(
+  {
+    lat: { type: Number },
+    lng: { type: Number },
+  },
+  { _id: false }
+);
 
-const ownWasteSchema = new Schema({
-  name: { type: String },
-  weight: { type: Number },
-});
+const ownWasteSchema = new Schema(
+  {
+    name: { type: String },
+    weight: { type: Number },
+  },
+  { _id: false }
+);
 
-const fundingHistroySchema = new Schema({
-  userId: { type: String },
-  coin: { type: String },
-  amount: { type: Number },
-});
-const rationaleSchema = new Schema({
-  type: { type: String },
-  name: { type: String },
-  content: { type: String },
-});
+const fundingHistroySchema = new Schema(
+  {
+    userId: { type: String },
+    coin: { type: String },
+    amount: { type: Number },
+  },
+  { _id: false }
+);
+const rationaleSchema = new Schema(
+  {
+    type: { type: String },
+    name: { type: String },
+    content: { type: String },
+  },
+  { _id: false }
+);
 
-const coinSchema = new Schema({
-  ticker: { type: String },
-  name: { type: String },
-  position: positionSchema,
-  balance: { type: Number },
-});
+const coinSchema = new Schema(
+  {
+    ticker: { type: String },
+    name: { type: String },
+    position: positionSchema,
+    balance: { type: Number },
+  },
+  { _id: false }
+);
 
-const rangeSchema = new Schema({
-  avr: { type: Number },
-  min: { type: Number },
-  max: { type: Number },
-  unit: { type: String },
-});
+const rangeSchema = new Schema(
+  {
+    avr: { type: Number },
+    min: { type: Number },
+    max: { type: Number },
+    unit: { type: String },
+  },
+  { _id: false }
+);
 
 module.exports = {
   mileStoneSchema,

@@ -3,7 +3,7 @@ const { ownWasteSchema } = require("./OtherSchema");
 const { Schema } = mongoDb;
 
 const recycleLedgerSchema = new Schema({
-  recycleLedgerId: { type: String },
+  recycleLedgerId: { type: String, index: true },
   ownWastes: [ownWasteSchema],
   recycleTransactionIds: [{ type: String }],
 });

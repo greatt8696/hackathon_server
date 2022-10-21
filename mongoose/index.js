@@ -10,6 +10,9 @@ const {
   RecycleLedger,
   RecycleWorldTransactions,
 } = require("./models");
+const {
+  mongo: { ObjectId },
+} = require("mongoose");
 
 const {
   user,
@@ -19,6 +22,7 @@ const {
   techFund,
   greenFund,
 } = require("../recycleSimulation");
+const { createNewWallet, addCoin } = require("./chaincode/walletHandler");
 
 const connectDb = function () {
   return mongoDb
@@ -46,6 +50,14 @@ const initDb = async function () {
   RecycleLedger.insertMany(recycleLedger);
   RecycleWorldTransactions.insertMany(recycleWorldTransaction);
   console.log("db init 초기화 완료");
+  createRandom();
+};
+
+const createRandom = async function () {
+  setTimeout(() => {
+    createNewWallet(121);
+    addCoin("111111111111111111111111", "DDDDDDDD");
+  }, 50);
 };
 
 mongoDb.Promise = global.Promise;

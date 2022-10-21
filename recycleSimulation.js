@@ -1,5 +1,7 @@
 const { compare, encrypt } = require("./util/crypto");
-
+const mongoDb = require("mongoose");
+const { Schema } = mongoDb;
+const { ObjectId } = mongoDb.mongo;
 const user = [
   {
     userId: "테스트용id1",
@@ -9,7 +11,7 @@ const user = [
     name: "지자체유저1",
     role: "지자체",
     recycleLedgerIds: ["재활용장부테스트용uid1"],
-    walletId: "지갑테스트용id1",
+    walletId: "111111111111111111111111",
   },
   {
     userId: "테스트용id2",
@@ -18,25 +20,24 @@ const user = [
     pwd: "$2b$08$SHqWBDxEgdvxRtSu0udOBuiog93YoctPuEJz9vksEycc5ttcsiJaq",
     name: "수거유저2",
     role: "수거",
-    recycleLedgerIds: ["재활용장부테스트용uid1"],
-    walletId: "지갑테스트용id1",
+    recycleLedgerIds: ["재활용장부테스트용uid2"],
+    walletId: "222222222222222222222222",
   },
   {
     userId: "테스트용id3",
     uid: "테스트용uid3",
-    email: "test2@gmail.com",
+    email: "test3@gmail.com",
     pwd: "$2b$08$SHqWBDxEgdvxRtSu0udOBuiog93YoctPuEJz9vksEycc5ttcsiJaq",
     name: "수거유저3",
     role: "수거",
     recycleLedgerIds: ["재활용장부테스트용uid3"],
-    walletId: "지갑테스트용id3",
+    walletId: "333333333333333333333333",
   },
 ];
 
 const wallet = [
   {
-    walletId: "지갑테스트용id1",
-    onwer: "테스트용uid1",
+    walletId: "111111111111111111111111",
     coins: [
       {
         ticker: "GREEN",
@@ -61,8 +62,7 @@ const wallet = [
     ],
   },
   {
-    walletId: "지갑테스트용id2",
-    onwer: "테스트용uid2",
+    walletId: "222222222222222222222222",
     coins: [
       {
         ticker: "GREEN",
@@ -86,8 +86,7 @@ const wallet = [
     ],
   },
   {
-    walletId: "지갑테스트용id3",
-    onwer: "테스트용uid3",
+    walletId: "333333333333333333333333",
     coins: [
       {
         ticker: "GREEN",
@@ -171,8 +170,8 @@ const greenFund = [
     basePoint: { lat: 11.111, lng: 11.111 },
     section: { type: "svg", path: "" },
     treeType: "참나무",
-    age: { avr: 15, min: 12, max: 18 }, // 년
-    height: { avr: 5, min: 4, max: 6 }, // 미터
+    age: { avr: 15, min: 12, max: 18, unit: "year" }, // 년
+    height: { avr: 5, min: 4, max: 6, unit: "meter" }, // 미터
     createdDate: "2022.11.11",
     endDate: "2023.12.11",
     targetAmount: 150000,
@@ -187,8 +186,8 @@ const greenFund = [
     basePoint: { lat: 22.2222, lng: 22.2222 },
     section: { type: "svg", path: "" },
     treeType: "은행나무",
-    age: { avr: 15, min: 12, max: 18 }, // 년
-    height: { avr: 5, min: 4, max: 6 }, // 미터
+    age: { avr: 15, min: 12, max: 18, unit: "year" }, // 년
+    height: { avr: 5, min: 4, max: 6, unit: "meter" }, // 미터
     createdDate: "2022.10.18",
     endDate: "2022.12.18",
     targetAmount: 2200000,

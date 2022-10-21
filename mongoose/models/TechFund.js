@@ -7,7 +7,7 @@ const {
 const { Schema } = mongoDb;
 
 const techFundSchema = new Schema({
-  techFundId: { type: String },
+  techFundId: { type: String, index: true },
   name: { type: String },
   state: { type: String }, // 검토, 펀딩중, 펀딩완료, 사업진행중
   organizer: { type: String },

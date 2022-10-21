@@ -7,7 +7,7 @@ const {
 const { Schema } = mongoDb;
 
 const greenFundSchema = new Schema({
-  greenFundId: { type: String },
+  greenFundId: { type: String, index: true },
   state: { type: String },
   name: { type: String },
   organizer: { type: String },
