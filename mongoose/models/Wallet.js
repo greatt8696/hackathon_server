@@ -1,5 +1,6 @@
-const mongoDb = require("mongoose");
 const { coinSchema } = require("./OtherSchema");
+
+const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 const { ObjectId } = mongoDb.mongo;
 

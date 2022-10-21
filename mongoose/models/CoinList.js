@@ -1,11 +1,14 @@
-const mongoDb = require("mongoose");
 const { ownWasteSchema } = require("./OtherSchema");
+
+const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
+const { ObjectId } = mongoDb.mongo;
 
 const coinListSchema = new Schema({
+  coinId: { type: ObjectId, index: true },
   ticker: { type: String },
   name: { type: String },
-  recycleTransactionIds: [{ type: String }],
+  origin: { type: String },
 });
 
 coinListSchema.statics.create = function (paylaod) {
@@ -33,6 +36,6 @@ coinListSchema.statics.getWalletByid = function (id) {
   return this.remove({ id });
 };
 
-const coinList = mongoDb.model("coinList", coinListSchema);
+const CoinList = mongoDb.model("coinList", coinListSchema);
 
-module.exports = { coinList };
+module.exports = { CoinList };
