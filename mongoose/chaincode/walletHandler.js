@@ -15,10 +15,16 @@ const {
 } = require("mongoose");
 const { removeDep } = require("../../util/jsonUtil");
 
-const makeId = (idx) => ObjectId();
-const makeCoin = (ticker = "GREEN", name = "그린코인", balance = 0) => {
-  return { ticker, name, balance };
-};
+const {
+  makeId,
+  makeUid,
+  makeEmail,
+  makeRole,
+  makeName,
+  makerecycleLedgerIds,
+  makeBotObjectId,
+  makeCoin,
+} = require("../util");
 
 const createNewWallet = (idx) => {
   const walletId = makeId();
@@ -28,6 +34,21 @@ const createNewWallet = (idx) => {
     coins: [coin],
   };
   Wallet.create(newWallet);
+};
+const createBotWallets = (awalletSize) => {
+  const idxList = Array(awalletSize)
+    .fill(false)
+    .map((_, idx) => idx);
+
+  const newwallets = idxList.map((idx) => {
+    const walletId = makeBotObjectId(idx);
+    const coin = makeCoin({ balance: 100000000 * Math.random() + 100000 });
+    return {
+      walletId,
+      coins: [coin],
+    };
+  });
+  return Wallet.insertMany(newwallets);
 };
 
 const addCoin = async (walletId, ticker) => {
@@ -46,4 +67,4 @@ const addCoin = async (walletId, ticker) => {
   console.log("addCoin", result);
 };
 
-module.exports = { createNewWallet, addCoin };
+module.exports = { createBotWallets, addCoin };

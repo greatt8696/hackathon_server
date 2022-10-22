@@ -22,7 +22,8 @@ const {
   techFund,
   greenFund,
 } = require("../recycleSimulation");
-const { createNewWallet, addCoin } = require("./chaincode/walletHandler");
+const { createBotWallets, addCoin } = require("./chaincode/walletHandler");
+const { createBotUsers } = require("./chaincode/userHandler");
 
 const connectDb = function () {
   return mongoDb
@@ -43,22 +44,34 @@ const initDb = async function () {
   await RecycleLedger.deleteAll();
   await RecycleWorldTransactions.deleteAll();
 
-  Wallet.insertMany(wallet);
-  User.insertMany(user);
+  // Wallet.insertMany(wallet);
   TechFund.insertMany(techFund);
   GreenFund.insertMany(greenFund);
   RecycleLedger.insertMany(recycleLedger);
   RecycleWorldTransactions.insertMany(recycleWorldTransaction);
   console.log("db init 초기화 완료");
-  createRandom();
+  // createRandom();
+
+  const BOT_USER_SIZE = 88;
+
+  createBotWallets(BOT_USER_SIZE)
+    .then((result) => console.log( "Success: createBotWallets"))
+    .catch((err) => {
+      console.log(err, "Fail: createBotWallets");
+    });
+
+  createBotUsers(BOT_USER_SIZE)
+    .then((result) => console.log("Success: createBotUsers"))
+    .catch((err) => {
+      console.log(err, "Fail: createBotUsers");
+    });
 };
 
-const createRandom = async function () {
-  setTimeout(() => {
-    createNewWallet(121);
-    addCoin("111111111111111111111111", "DDDDDDDD");
-  }, 50);
-};
+// const createRandom = async function () {
+//   setTimeout(() => {
+//     addCoin("111111111111111111111111", "DDDDDDDD");
+//   }, 500);
+// };
 
 mongoDb.Promise = global.Promise;
 
