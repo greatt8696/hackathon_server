@@ -1,6 +1,6 @@
 module.exports = {
   userRole: {
-    public: { name: "지차체" },
+    public: { name: "지자체" },
     collect: { name: "수거" },
     transfer: { name: "운송" },
     select: { name: "선별" },
@@ -39,30 +39,30 @@ module.exports = {
       name: "플레이크",
       ticker: "FLAK",
       sub: {
-        pe: { name: "PE", ticker: "FLAK_PE" },
-        pp: { name: "PP", ticker: "FLAK_PP" },
-        ps: { name: "PS", ticker: "FLAK_PS" },
-        pvc: { name: "PVC", ticker: "FLAK_PVC" },
-        abs: { name: "ABS", ticker: "FLAK_ABS" },
+        pe: { name: "플레이크-PE", ticker: "FLAK_PE" },
+        pp: { name: "플레이크-PP", ticker: "FLAK_PP" },
+        ps: { name: "플레이크-PS", ticker: "FLAK_PS" },
+        pvc: { name: "플레이크-PVC", ticker: "FLAK_PVC" },
+        abs: { name: "플레이크-ABS", ticker: "FLAK_ABS" },
       },
     },
     pellet: {
       name: "펠렛",
       ticker: "PELL",
       sub: {
-        pp: { name: "PP", ticker: "PELL_PP" },
-        ps: { name: "PS", ticker: "PELL_PS" },
-        pvc: { name: "PVC", ticker: "PELL_PVC" },
-        abs: { name: "ABS", ticker: "PELL_ABS" },
+        pp: { name: "펠렛-PP", ticker: "PELL_PP" },
+        ps: { name: "펠렛-PS", ticker: "PELL_PS" },
+        pvc: { name: "펠렛-PVC", ticker: "PELL_PVC" },
+        abs: { name: "펠렛-ABS", ticker: "PELL_ABS" },
       },
     },
     compress: {
       name: "압축",
       ticker: "COMP",
       sub: {
-        pe: { name: "PE", ticker: "COMP_PP" },
-        pp: { name: "pp", ticker: "COMP_PS" },
-        pet: { name: "PET", ticker: "COMP_PET" },
+        pe: { name: "압축-PE", ticker: "COMP_PE" },
+        pp: { name: "압축-PP", ticker: "COMP_PP" },
+        pet: { name: "압축-PET", ticker: "COMP_PET" },
       },
     },
     glassBottle: {
