@@ -4,7 +4,7 @@ const {
   mongo: { ObjectId },
 } = require("mongoose");
 
-const USER_ROLE = constance.userRole;
+const userRoles = Object.values(constance.userRole).map(({ name }) => name) ;
 const OBJECTID_TABLE = [
   1,
   2,
@@ -38,7 +38,10 @@ const createObjectId = () => {
 const makeId = (idx) => `테스트용id${idx}`;
 const makeUid = (idx) => `테스트용uid${idx}`;
 const makeEmail = (idx) => `테스트${idx}@test.com`;
-const makeRole = () => USER_ROLE[parseInt(Math.random() * USER_ROLE.length)];
+
+
+
+const makeRole = () => userRoles[parseInt(Math.random() * userRoles.length)]
 const makeName = (idx, role) => `${role}유저${idx}`;
 const makerecycleLedgerIds = (idx) => [`재활용장부테스트용${idx}`];
 
@@ -56,6 +59,9 @@ const makeBotObjectId = (idx) => {
 
     case 4:
       return ObjectId(`00000000000000000000${idx}`);
+
+    case 5:
+      return ObjectId(`0000000000000000000${idx}`);
 
     default:
       return ObjectId(`00000000000000000000000${"a"}`);

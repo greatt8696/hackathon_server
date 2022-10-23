@@ -6,20 +6,6 @@ const mileStoneSchema = new Schema({
   targetDate: { type: Date, default: Date.now },
 });
 
-const recycleTransactionSchema = new Schema(
-  {
-    recycleTransactionId: { type: String, index: true },
-    type: { type: String },
-    from: { type: String },
-    to: { type: String },
-    weigth: { type: Number },
-    createdDate: { type: Date, default: Date.now },
-    recycleType: [{ type: String }],
-    validity: [],
-  },
-  { id: false }
-);
-
 const positionSchema = new Schema(
   {
     lat: { type: Number },
@@ -81,5 +67,4 @@ module.exports = {
   rationaleSchema,
   ownWasteSchema,
   rangeSchema,
-  recycleTransactionSchema,
 };

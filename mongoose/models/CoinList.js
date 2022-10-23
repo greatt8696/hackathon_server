@@ -2,11 +2,9 @@ const { ownWasteSchema } = require("./OtherSchema");
 
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
-const { ObjectId } = mongoDb.mongo;
 
 const coinListSchema = new Schema({
-  coinId: { type: ObjectId, index: true },
-  ticker: { type: String },
+  ticker: { type: String, index: true, unique: true },
   name: { type: String },
   origin: { type: String },
 });

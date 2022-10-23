@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const mongoDb = require("mongoose");
-const { createUid } = require("../util/createRandom");
+const { createUid, chooseRandom } = require("../util/createRandom");
 const {
   Wallet,
   User,
@@ -15,8 +15,6 @@ const {
 } = require("mongoose");
 
 const {
-  user,
-  wallet,
   recycleLedger,
   recycleWorldTransaction,
   techFund,
@@ -37,41 +35,43 @@ const connectDb = function () {
 };
 
 const initDb = async function () {
-  await Wallet.deleteAll();
-  await User.deleteAll();
+  //await Wallet.deleteAll();
+  //await User.deleteAll();
   await TechFund.deleteAll();
   await GreenFund.deleteAll();
   await RecycleLedger.deleteAll();
   await RecycleWorldTransactions.deleteAll();
 
-  // Wallet.insertMany(wallet);
   TechFund.insertMany(techFund);
   GreenFund.insertMany(greenFund);
   RecycleLedger.insertMany(recycleLedger);
   RecycleWorldTransactions.insertMany(recycleWorldTransaction);
   console.log("db init 초기화 완료");
-  // createRandom();
 
-  const BOT_USER_SIZE = 88;
+  const BOT_USER_SIZE = 8888;
 
-  createBotWallets(BOT_USER_SIZE)
-    .then((result) => console.log( "Success: createBotWallets"))
-    .catch((err) => {
-      console.log(err, "Fail: createBotWallets");
-    });
+  //  createBotWallets(BOT_USER_SIZE)
+  //   .then((result) => console.log("Success: createBotWallets"))
+  //  .catch((err) => {
+  //    console.log(err, "Fail: createBotWallets");
+  //  });
 
-  createBotUsers(BOT_USER_SIZE)
-    .then((result) => console.log("Success: createBotUsers"))
-    .catch((err) => {
-      console.log(err, "Fail: createBotUsers");
-    });
-};
+  //createBotUsers(BOT_USER_SIZE)
+  //  .then((result) => console.log("Success: createBotUsers"))
+  //  .catch((err) => {
+  //    console.log(err, "Fail: createBotUsers");
+  //  });
 
-// const createRandom = async function () {
-//   setTimeout(() => {
-//     addCoin("111111111111111111111111", "DDDDDDDD");
-//   }, 500);
-// };
+  const allUsers = await User.findAll();
+  const public = allUsers.filter(({ role }) => role === "지자체");
+  const collector = allUsers.filter(({ role }) => role === "수거");
+  const landfill = allUsers.filter(({ role }) => role === "매립");
+
+  const publicWallet = chooseRandom(public).walletId;
+
+  console.log(publicWallet);
+  // console.log(landfill);
+} ;
 
 mongoDb.Promise = global.Promise;
 

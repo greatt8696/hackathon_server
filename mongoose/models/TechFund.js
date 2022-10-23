@@ -15,7 +15,7 @@ const techFundSchema = new Schema({
   techType: { type: String }, // 가공, 처리,
   rationales: [{ type: Object }],
   mileStones: [mileStoneSchema],
-  createdDate: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   endDate: { type: Date, default: Date.now },
   targetAmount: { type: Number },
   currAmount: { type: Number },

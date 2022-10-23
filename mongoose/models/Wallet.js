@@ -5,7 +5,7 @@ const { Schema } = mongoDb;
 const { ObjectId } = mongoDb.mongo;
 
 const walletSchema = new Schema({
-  walletId: { type: ObjectId, index: true },
+  walletId: { type: ObjectId, index: true, unique: true },
   coins: [coinSchema],
 });
 

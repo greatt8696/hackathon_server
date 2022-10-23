@@ -5,13 +5,13 @@ const { ObjectId } = mongoDb.mongo;
 const UserSchema = new Schema(
   {
     userId: { type: String },
-    uid: { type: String, index: true },
+    uid: { type: String, index: true, unique: true },
     email: { type: String, unique: true },
     pwd: { type: String },
     name: { type: String },
     role: { type: String },
     recycleLedgerIds: [{ type: String }],
-    walletId: { type: ObjectId },
+    walletId: { type: ObjectId, unique: true },
   },
   { timestamps: true, versionKey: false }
 );

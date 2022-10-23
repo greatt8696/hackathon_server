@@ -15,7 +15,7 @@ const techFundSchema = new Schema({
   techFundUid: { type: String },
   state: { type: String, default: "pending" }, // pending, decisioning, funding, researching, Proceeding
   techFundName: { type: String }, // 플라스틱오일기술#123
-  createdDate: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   issuer: { type: String },
   totalCapital: Number, // 자본금(목표)
   fundingRate: { type: Number, default: 0 }, // 0% ~ 100%

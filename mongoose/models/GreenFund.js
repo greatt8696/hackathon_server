@@ -7,7 +7,7 @@ const {
 const { Schema } = mongoDb;
 
 const greenFundSchema = new Schema({
-  greenFundId: { type: String, index: true },
+  greenFundId: { type: String, index: true , unique: true },
   state: { type: String },
   name: { type: String },
   organizer: { type: String },
@@ -16,7 +16,7 @@ const greenFundSchema = new Schema({
   treeType: { type: String },
   age: rangeSchema, // 년
   height: rangeSchema, // 미터
-  createdDate: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   endDate: { type: Date, default: Date.now },
   targetAmount: { type: Number },
   currAmount: { type: Number },

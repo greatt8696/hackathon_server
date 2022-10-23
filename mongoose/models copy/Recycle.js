@@ -7,7 +7,7 @@ const recycleSchema = new Schema({
   type: String, // recycle, tech, tree
   origin: String,
   recycleName: String, // 플라스틱오일기술#123
-  createdDate: { type: Date, default: Date.now },
+  createdAt: { type: Date, default: Date.now },
   issuer: String,
   totalCapital: Number, // 자본금(목표)
   fundingRate: Number, // 0% ~ 100%

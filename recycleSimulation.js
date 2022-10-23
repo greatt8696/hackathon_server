@@ -126,40 +126,38 @@ const recycleLedger = [
   },
 ];
 
-const recycleWorldTransaction = {
-  recycleTransactions: [
-    {
-      recycleTransactionId: "재활용트랜잭션1",
-      type: "발생",
-      from: "지자체ID#1",
-      to: "지자체ID#1",
-      weigth: 9000,
-      createdDate: "2022.10.18",
-      recycleType: ["플라스틱", "고철캔", "고철"],
-      validity: [],
-    },
-    {
-      recycleTransactionId: "재활용트랜잭션2",
-      type: "수거",
-      from: "지자체ID#1",
-      to: "플라스틱수거전문ID#1",
-      weigth: 1000,
-      createdDate: "2022.10.18",
-      recycleType: ["플라스틱"],
-      validity: [],
-    },
-    {
-      recycleTransactionId: "재활용트랜잭션3",
-      type: "수거",
-      from: "지자체ID#1",
-      to: "플라스틱수거전문ID#2",
-      weigth: 5000,
-      createdDate: "2022.10.18",
-      recycleType: ["고철"],
-      validity: [{ type: "수량부족", user: "유저1", details: "payload" }],
-    },
-  ],
-};
+const recycleWorldTransaction = [
+  {
+    recycleTransactionId: "재활용트랜잭션1",
+    type: "발생",
+    from: "지자체ID#1",
+    to: "지자체ID#1",
+    weigth: 9000,
+    createdAt: "2022.10.18",
+    recycleType: ["플라스틱", "고철캔", "고철"],
+    validity: [],
+  },
+  {
+    recycleTransactionId: "재활용트랜잭션2",
+    type: "수거",
+    from: "지자체ID#1",
+    to: "플라스틱수거전문ID#1",
+    weigth: 1000,
+    createdAt: "2022.10.18",
+    recycleType: ["플라스틱"],
+    validity: [],
+  },
+  {
+    recycleTransactionId: "재활용트랜잭션3",
+    type: "수거",
+    from: "지자체ID#1",
+    to: "플라스틱수거전문ID#2",
+    weigth: 5000,
+    createdAt: "2022.10.13",
+    recycleType: ["고철"],
+    validity: [{ type: "수량부족", user: "유저1", details: "payload" }],
+  },
+];
 
 const greenFund = [
   {
@@ -172,7 +170,7 @@ const greenFund = [
     treeType: "참나무",
     age: { avr: 15, min: 12, max: 18, unit: "year" }, // 년
     height: { avr: 5, min: 4, max: 6, unit: "meter" }, // 미터
-    createdDate: "2022.11.11",
+    createdAt: "2022.11.11",
     endDate: "2023.12.11",
     targetAmount: 150000,
     currAmount: 150000,
@@ -188,7 +186,7 @@ const greenFund = [
     treeType: "은행나무",
     age: { avr: 15, min: 12, max: 18, unit: "year" }, // 년
     height: { avr: 5, min: 4, max: 6, unit: "meter" }, // 미터
-    createdDate: "2022.10.18",
+    createdAt: "2022.10.18",
     endDate: "2022.12.18",
     targetAmount: 2200000,
     currAmount: 500000,
@@ -227,7 +225,7 @@ const techFund = [
         targetDate: "2023.12.11",
       },
     ],
-    createdDate: "2022.11.11",
+    createdAt: "2022.11.11",
     endDate: "2023.12.11",
     targetAmount: 150000,
     currAmount: 100000,
@@ -260,7 +258,7 @@ const techFund = [
         targetDate: "2023.12.11",
       },
     ],
-    createdDate: "2022.11.11",
+    createdAt: "2022.11.11",
     endDate: "2023.12.11",
     targetAmount: 220000,
     currAmount: 220000,

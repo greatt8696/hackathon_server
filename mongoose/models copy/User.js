@@ -16,7 +16,7 @@ const UserSchema = new Schema(
     userId: { type: String },
     name: { type: String },
     organizationId: { type: String },
-    createdDate: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now },
     wallet: { type: [wallet], default: [{}] },
   },
   { timestamps: true, versionKey: false }

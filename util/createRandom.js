@@ -128,4 +128,10 @@ const createObjectId = () => {
   );
 };
 
-module.exports = { createUid, createNftId, createObjectId };
+const chooseRandom = (array) => {
+  const size = array.length;
+  const randomIdx = parseInt(size * Math.random());
+  return array[randomIdx];
+};
+
+module.exports = { createUid, createNftId, createObjectId, chooseRandom };
