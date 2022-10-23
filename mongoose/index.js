@@ -9,6 +9,7 @@ const {
   GreenFund,
   RecycleLedger,
   RecycleWorldTransactions,
+  CoinList,
 } = require("./models");
 const {
   mongo: { ObjectId },
@@ -22,6 +23,7 @@ const {
 } = require("../recycleSimulation");
 const { createBotWallets, addCoin } = require("./chaincode/walletHandler");
 const { createBotUsers } = require("./chaincode/userHandler");
+const { initCoinList } = require("./chaincode/coinHandler");
 
 const connectDb = function () {
   return mongoDb
@@ -37,6 +39,7 @@ const connectDb = function () {
 const initDb = async function () {
   //await Wallet.deleteAll();
   //await User.deleteAll();
+  //await CoinList.deleteAll();
   await TechFund.deleteAll();
   await GreenFund.deleteAll();
   await RecycleLedger.deleteAll();
@@ -62,6 +65,8 @@ const initDb = async function () {
   //    console.log(err, "Fail: createBotUsers");
   //  });
 
+  // await initCoinList()
+
   const allUsers = await User.findAll();
   const public = allUsers.filter(({ role }) => role === "지자체");
   const collector = allUsers.filter(({ role }) => role === "수거");
@@ -69,9 +74,11 @@ const initDb = async function () {
 
   const publicWallet = chooseRandom(public).walletId;
 
+  CoinList.isExist("GREEN").then((result) => console.log(result));
+
   console.log(publicWallet);
   // console.log(landfill);
-} ;
+};
 
 mongoDb.Promise = global.Promise;
 

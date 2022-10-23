@@ -34,6 +34,11 @@ coinListSchema.statics.getWalletByid = function (id) {
   return this.remove({ id });
 };
 
+coinListSchema.statics.isExist = async function (ticker) {
+  const findResult = await this.find({ ticker: ticker });
+  return findResult.length === 0 ? false : true;
+};
+
 const CoinList = mongoDb.model("coinList", coinListSchema);
 
 module.exports = { CoinList };
