@@ -31,6 +31,7 @@ const {
   makeBotObjectId,
   makeCoin,
 } = require("../util");
+const { userSocket } = require("../../socket");
 
 const initCoinList = () => {
   const coinList = Object.values(constance.coinList);
@@ -46,7 +47,6 @@ const initCoinList = () => {
   return CoinList.insertMany([constance.coinList.greencoin, ...subList]);
 };
 
-const checkBalance = async (walletId, ticker) => {};
 
 const addCoin = async (walletId, ticker) => {
   const tempId = walletId;
@@ -69,14 +69,6 @@ class WalletManager {
     this.wallet = wallet.immer();
     // this.coinList = makeCoinList(wallet);
   }
-
-  // makeCoinList = ({ coins }) => {
-  //   const coinList = {};
-  //   coins.forEach(({ ticker, balance }) => {
-  //     coinList[ticker] = balance;
-  //   });
-  //   return coinList;
-  // };
 
   checkBalance = function (inputTicker, inputBalance) {
     const list = [...this.wallet.coins];
@@ -164,21 +156,27 @@ const transferAsset = async ({ from, to, ticker, balance }) => {
 
     // console.log("송금하는사람 :", fromWM.wallet.coins[0].balance);
 
-    console.log(
-      "송금 전 :",
-      toWM.wallet.walletId,
-      toWM.wallet.coins[0].balance
-    );
+    //console.log(
+    //  "송금 전 :",
+    //  toWM.wallet.walletId,
+    //  toWM.wallet.coins[0].balance
+    //);
     fromWM.decreaseBalance(ticker, balance);
     toWM.increaseBalance(ticker, balance);
-    await toWM.saveWallet();
     await fromWM.saveWallet();
+    await toWM.saveWallet();
 
     const after = await Wallet.findOne({
       walletId: ObjectId(to),
     });
-    console.log("송금 후 :", after.walletId, after.coins[0].balance);
+    //console.log("송금 후 :", after.walletId, after.coins[0].balance);
 
+    userSocket.emit("transfer", {
+      fromWM,
+      toWM,
+      ticker,
+      balance,
+    });
     resolve(true);
   });
 };
