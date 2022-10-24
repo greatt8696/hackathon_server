@@ -35,7 +35,10 @@ socketServer.on("connection", (socket) => {
   socket.on("joinRoom", ({ joinRoom }) => {
     socket.join(joinRoom);
     socketServer.to(joinRoom).emit("helloTestRoom", "helloTestRoom");
-    console.log(joinRoom);
+    console.log(joinRoom)
+    
+    
+    ;
   });
 });
 
