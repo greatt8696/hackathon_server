@@ -6,6 +6,7 @@ module.exports = {
     select: { name: "선별" },
     landfill: { name: "매립" },
     incineration: { name: "소각" },
+    processing: { name: "가공" },
   },
   recycleLedgerWaste: {
     plastic: { name: "플라스틱", ticker: "PLST" },
@@ -14,6 +15,7 @@ module.exports = {
     glass: { name: "유리", ticker: "GLSS" },
     paper: { name: "종이", ticker: "PAPE" },
   },
+
   exchange: {
     seoulExchange: { name: "서울거래소", ticker: "EXC_SEO" },
     gyeonggidoExchange: { name: "경기도거래소", ticker: "EXC_GYD" },
@@ -22,6 +24,7 @@ module.exports = {
     jeolladoExchange: { name: "전라도거래소", ticker: "EXC_JLD" },
     gangwondoExchange: { name: "전라도거래소", ticker: "EXC_GWD" },
   },
+
   coinList: {
     greencoin: {
       name: "그린코인",

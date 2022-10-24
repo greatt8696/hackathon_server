@@ -1,5 +1,3 @@
-const { ownWasteSchema } = require("./OtherSchema");
-
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 

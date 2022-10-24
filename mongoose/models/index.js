@@ -4,9 +4,11 @@ const { GreenFund } = require("./GreenFund");
 const { RecycleLedger } = require("./RecycleLedger");
 const { Wallet } = require("./Wallet");
 const { CoinList } = require("./CoinList");
+const { TransferLedger } = require("./TransferLedger");
 const { RecycleWorldTransactions } = require("./RecycleTransactions");
 
 module.exports = {
+  TransferLedger,
   CoinList,
   Wallet,
   RecycleWorldTransactions,

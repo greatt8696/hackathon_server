@@ -129,6 +129,7 @@ const createObjectId = () => {
 };
 
 const chooseRandom = (array) => {
+  if (typeof array === "Array") return;
   const size = array.length;
   const randomIdx = parseInt(size * Math.random());
   return array[randomIdx];

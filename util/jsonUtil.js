@@ -1,3 +1,11 @@
-const removeDep = (data) => JSON.stringify(JSON.parse(data));
+Array.prototype.isEmpty = function () {
+  return this.length === 0 ? true : false;
+};
 
-module.exports = { removeDep };
+Array.prototype.immer = function () {
+  return JSON.parse(JSON.stringify(this));
+};
+
+Object.prototype.immer = function () {
+  return JSON.parse(JSON.stringify(this));
+};

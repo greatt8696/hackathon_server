@@ -1,6 +1,8 @@
 require("dotenv").config();
 const { createUid } = require("./util/createRandom");
 
+require("./util/jsonUtil");
+
 const express = require("express");
 
 const bodyParser = require("body-parser");
@@ -25,9 +27,7 @@ app.use(bodyParser.json());
 
 app.use("/recycle", recycleRouter);
 
-app.listen(SERVER_PORT, () => {
-  console.log("Running Server");
-});
+app.listen(SERVER_PORT, () => console.log("Running Server"));
 
 connectDb().then(() => {
   initDb();
