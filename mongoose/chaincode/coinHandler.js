@@ -47,7 +47,6 @@ const initCoinList = () => {
   return CoinList.insertMany([constance.coinList.greencoin, ...subList]);
 };
 
-
 const addCoin = async (walletId, ticker) => {
   const tempId = walletId;
   const wallet = await Wallet.findOne({ walletId: tempId });
@@ -73,7 +72,6 @@ class WalletManager {
   checkBalance = function (inputTicker, inputBalance) {
     const list = [...this.wallet.coins];
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
-
     if (!isExistTicker) return false;
     return isExistTicker.balance >= inputBalance ? true : false;
   };
@@ -81,7 +79,6 @@ class WalletManager {
   increaseBalance = async function (inputTicker, inputBalance) {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
-
     // coins 리스트에 없을경우 coinlist 추가
     if (!isExistTicker) {
       console.log("before findCoinList", inputTicker);
@@ -95,7 +92,6 @@ class WalletManager {
         { ticker, name, balance: 0 },
       ];
     }
-
     this.wallet.coins = [
       ...this.wallet.coins
         .immer()
@@ -138,10 +134,16 @@ class WalletManager {
       { ...this.wallet.immer() }
     );
   };
+
+  validateDB = async function (ticker, expectedBalance) {
+    const wallet = await Wallet.findOne({ walletId: this.wallet.walletId });
+    const coin = wallet.coins.find((coin) => coin.ticker === ticker);
+    return coin.balance === expectedBalance ? true : false;
+  };
 }
 
 const transferAsset = async ({ from, to, ticker, balance }) => {
-  return new Promise(async (resolve, _) => {
+  return new Promise(async (resolve, reject) => {
     const getWallets = await Wallet.find({
       walletId: [ObjectId(from), ObjectId(to)],
     });
@@ -154,65 +156,36 @@ const transferAsset = async ({ from, to, ticker, balance }) => {
     const fromWM = new WalletManager(fromWallet);
     const toWM = new WalletManager(toWallet);
 
-    // console.log("송금하는사람 :", fromWM.wallet.coins[0].balance);
+    const fromCheckBalance = fromWM.checkBalance(ticker, balance);
+    if (!fromCheckBalance)
+      reject(`발송거부 : ${from} -> ${to} ${ticker} : ${balance}`);
 
-    //console.log(
-    //  "송금 전 :",
-    //  toWM.wallet.walletId,
-    //  toWM.wallet.coins[0].balance
-    //);
     fromWM.decreaseBalance(ticker, balance);
     toWM.increaseBalance(ticker, balance);
+
+    const fromExpectedBalance = fromWallet.coins.find(
+      (coin) => coin.ticker === ticker
+    ).balance;
+    const toExpectedBalance = fromWallet.coins.find(
+      (coin) => coin.ticker === ticker
+    ).balance;
+
+    if (!fromWM.validateDB(ticker, fromExpectedBalance))
+      reject("이미 반영된 송금트랜잭션입니다.");
+
     await fromWM.saveWallet();
     await toWM.saveWallet();
 
-    const after = await Wallet.findOne({
-      walletId: ObjectId(to),
-    });
-    //console.log("송금 후 :", after.walletId, after.coins[0].balance);
+    const fromBalance = fromWM.wallet.coins.find(
+      (coin) => coin.ticker === ticker
+    );
+    const toBalance = toWM.wallet.coins.find((coin) => coin.ticker === ticker);
 
-    userSocket.emit("transfer", {
-      fromWM,
-      toWM,
-      ticker,
-      balance,
-    });
-    resolve(true);
+    const msg = `walletId: ${fromWM.wallet.walletId}가 walletId: ${toWM.wallet.walletId}에게 ${ticker}: ${balance}원을 송금하였습니다.`;
+    const afterBalance = `${fromWM.wallet.walletId} : ${fromBalance.balance},  ${toWM.wallet.walletId} : ${toBalance.balance}`;
+
+    resolve({ fromWM, toWM, ticker, balance, msg, afterBalance });
   });
 };
-
-// mongoDb.connect(process.env.MONGO_URI).then(async () => {
-//   // console.log(test);
-//   try {
-//     await transferAsset({
-//       from: "000000000000000000005202",
-//       to: "000000000000000000002503",
-//       ticker: "GREEN",
-//       balance: 100000,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-//   mongoDb.disconnect();
-// });
-
-// const senderWallet = await Wallet.findOne({
-//   walletId: ObjectId("000000000000000000000002"),
-// });
-
-// const senderWM = new WalletManager(senderWallet);
-
-// for (let idx = 0; idx < 10; idx++) {
-//   senderWM.increaseBalance("FLAK_PE", 1);
-//   await senderWM.saveWallet();
-// }
-
-// for (let idx = 0; idx < 11; idx++) {
-//   senderWM.decreaseBalance("FLAK_PE", 1);
-//   await senderWM.saveWallet();
-// }
-
-// senderWM.decreaseBalance("PAPE_NEWS", 500000);
-// console.log(senderWM.wallet);
 
 module.exports = { initCoinList, addCoin, WalletManager, transferAsset };
