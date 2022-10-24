@@ -51,7 +51,7 @@ const initDb = async function () {
   RecycleWorldTransactions.insertMany(recycleWorldTransaction);
   console.log("db init 초기화 완료");
 
-  const BOT_USER_SIZE = 60000;
+  const BOT_USER_SIZE = 22222;
 
   // createBotWallets(BOT_USER_SIZE)
   //   .then((result) => console.log("Success: createBotWallets"))
@@ -91,12 +91,10 @@ const initDb = async function () {
     console.log(
       `${sender.name}가 ${receiver.name}에게 ${500000000}원을 송금하였습니다.`
     );
-  }, 100);
+  }, 10);
 
   // const publicWallet = chooseRandom(public).walletId;
-
   // CoinList.isExist("GREEN").then((result) => console.log(result));
-
   // console.log(publicWallet);
   // console.log(public.length);
   // console.log(collector.length);
