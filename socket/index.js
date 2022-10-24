@@ -39,9 +39,15 @@ socketServer.on("connection", (socket) => {
   });
 });
 
-new UserSocket(socketServer);
-new TradeSocket(socketServer);
-new TechSocket(socketServer);
-new GreenSocket(socketServer);
+const userSocket = new UserSocket(socketServer);
+const tradeSocket = new TradeSocket(socketServer);
+const techSocket = new TechSocket(socketServer);
+const greenSocket = new GreenSocket(socketServer);
 
-module.exports = { socketServer };
+module.exports = {
+  socketServer,
+  userSocket,
+  tradeSocket,
+  techSocket,
+  greenSocket,
+};

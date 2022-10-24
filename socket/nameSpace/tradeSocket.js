@@ -47,6 +47,9 @@ class TradeSocket {
       );
     });
   }
+  emit = function (emitName, paylaod) {
+    this.tradeSocket.emit(emitName, paylaod);
+  };
 }
 
 module.exports = { TradeSocket };

@@ -56,6 +56,10 @@ class TechSocket {
       });
     });
   }
+  
+  emit = function (emitName, paylaod) {
+    return this.techSocket.emit(emitName, paylaod);
+  };
 }
 
 module.exports = { TechSocket };

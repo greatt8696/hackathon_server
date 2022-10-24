@@ -56,6 +56,9 @@ class UserSocket {
       });
     });
   }
+  emit = function (emitName, paylaod) {
+    this.userSocket.emit(emitName, paylaod);
+  };
 }
 
 module.exports = { UserSocket };

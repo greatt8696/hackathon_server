@@ -40,18 +40,18 @@ const initDb = async function () {
   // await Wallet.deleteAll();
   // await User.deleteAll();
   // await CoinList.deleteAll();
-  await TechFund.deleteAll();
-  await GreenFund.deleteAll();
-  await RecycleLedger.deleteAll();
-  await RecycleWorldTransactions.deleteAll();
+  // await TechFund.deleteAll();
+  // await GreenFund.deleteAll();
+  // await RecycleLedger.deleteAll();
+  // await RecycleWorldTransactions.deleteAll();
 
-  TechFund.insertMany(techFund);
-  GreenFund.insertMany(greenFund);
-  RecycleLedger.insertMany(recycleLedger);
-  RecycleWorldTransactions.insertMany(recycleWorldTransaction);
-  console.log("db init 초기화 완료");
+  // TechFund.insertMany(techFund);
+  // GreenFund.insertMany(greenFund);
+  // RecycleLedger.insertMany(recycleLedger);
+  // RecycleWorldTransactions.insertMany(recycleWorldTransaction);
+  // console.log("db init 초기화 완료");
 
-  const BOT_USER_SIZE = 22222;
+  // const BOT_USER_SIZE = 22222;
 
   // createBotWallets(BOT_USER_SIZE)
   //   .then((result) => console.log("Success: createBotWallets"))
@@ -84,14 +84,14 @@ const initDb = async function () {
       from: sender.walletId.toString(),
       to: receiver.walletId.toString(),
       ticker: "GREEN",
-      balance: 500000000,
+      balance: 500000,
     });
     const after = await Wallet.findOne({ walletId: sender.walletId });
     // console.log(after.coins[0].balance);
     console.log(
       `${sender.name}가 ${receiver.name}에게 ${500000000}원을 송금하였습니다.`
     );
-  }, 10);
+  }, 1000);
 
   // const publicWallet = chooseRandom(public).walletId;
   // CoinList.isExist("GREEN").then((result) => console.log(result));

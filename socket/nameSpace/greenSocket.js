@@ -56,6 +56,9 @@ class GreenSocket {
       });
     });
   }
+  emit = function (emitName, paylaod) {
+    return this.greenSocket.emit(emitName, paylaod);
+  };
 }
 
 module.exports = { GreenSocket };
