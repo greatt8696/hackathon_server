@@ -7,6 +7,7 @@ const {
   GreenFund,
   RecycleLedger,
   CoinList,
+  TransferLedger,
 } = require("../models");
 
 require("../../util/jsonUtil");
@@ -32,6 +33,7 @@ const {
   makeCoin,
 } = require("../util");
 const { userSocket } = require("../../socket");
+const { dataHash } = require("../../util/crypto");
 
 const initCoinList = () => {
   const coinList = Object.values(constance.coinList);
@@ -47,33 +49,53 @@ const initCoinList = () => {
   return CoinList.insertMany([constance.coinList.greencoin, ...subList]);
 };
 
-const addCoin = async (walletId, ticker) => {
-  const tempId = walletId;
-  const wallet = await Wallet.findOne({ walletId: tempId });
-  const oldcoinList = wallet.coins;
-  const newCoin = makeCoin(ticker);
-  const newCoins = [...oldcoinList, newCoin];
-  console.log("addCoin", { ...wallet, coins: newCoins });
-  const update = await Wallet.replaceOne(
-    { walletId: tempId },
-    { coins: newCoins }
-  );
-  const result = await Wallet.findOne({ walletId: tempId });
-  console.log("addCoin", result);
-};
-
 class WalletManager {
   constructor(wallet) {
     if (!wallet) throw new Error("해당 ID의 지갑을 찾지 못하였습니다.");
     this.wallet = wallet.immer();
+    // console.log("@@@@@@@", this.wallet);
     // this.coinList = makeCoinList(wallet);
   }
 
   checkBalance = function (inputTicker, inputBalance) {
+    // console.log(this.wallet);
+    // console.log("@@@@@@@", this.wallet.coins);
     const list = [...this.wallet.coins];
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     if (!isExistTicker) return false;
     return isExistTicker.balance >= inputBalance ? true : false;
+  };
+
+  getBalane = (inputTicker) => {
+    return this.wallet.coins.immer().find((coin) => coin.ticker === inputTicker)
+      .balance;
+  };
+
+  setBalance = async function (inputTicker, inputBalance) {
+    const list = this.wallet.coins.immer();
+    const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
+    // coins 리스트에 없을경우 coinlist 추가
+    if (!isExistTicker) {
+      // console.log("before findCoinList", inputTicker);
+      const findCoinList = await CoinList.find({ ticker: inputTicker });
+      // console.log("findCoinList", inputTicker, findCoinList[0]);
+      if (findCoinList.isEmpty()) throw new Error("등록되지 않은 코인입니다.");
+
+      const { ticker, name } = findCoinList[0];
+      this.wallet.coins = [
+        ...this.wallet.coins.immer(),
+        { ticker, name, balance: 0 },
+      ];
+    }
+    this.wallet.coins = [
+      ...this.wallet.coins
+        .immer()
+        .map((coin) =>
+          coin.ticker === inputTicker
+            ? { ...coin, balance: inputBalance }
+            : coin
+        ),
+    ];
   };
 
   increaseBalance = async function (inputTicker, inputBalance) {
@@ -81,9 +103,9 @@ class WalletManager {
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // coins 리스트에 없을경우 coinlist 추가
     if (!isExistTicker) {
-      console.log("before findCoinList", inputTicker);
+      // console.log("before findCoinList", inputTicker);
       const findCoinList = await CoinList.find({ ticker: inputTicker });
-      console.log("findCoinList", inputTicker, findCoinList[0]);
+      // console.log("findCoinList", inputTicker, findCoinList[0]);
       if (findCoinList.isEmpty()) throw new Error("등록되지 않은 코인입니다.");
 
       const { ticker, name } = findCoinList[0];
@@ -102,14 +124,12 @@ class WalletManager {
         ),
     ];
   };
-
   decreaseBalance = async function (inputTicker, inputBalance) {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
-
     // coins 리스트에 없을경우 coinlist 추가
     if (!isExistTicker) {
-      const findCoinList = await CoinList.find({ ticker: inputTicker });
+      const findCoinList = await CoinList.find({ ticker: inputTicker }).exec();
       if (findCoinList.isEmpty()) throw new Error("등록되지 않은 코인입니다.");
 
       const { ticker, name } = findCoinList;
@@ -132,11 +152,13 @@ class WalletManager {
     return Wallet.findOneAndUpdate(
       { walletId: this.wallet.walletId },
       { ...this.wallet.immer() }
-    );
+    ).exec();
   };
 
   validateDB = async function (ticker, expectedBalance) {
-    const wallet = await Wallet.findOne({ walletId: this.wallet.walletId });
+    const wallet = await Wallet.findOne({
+      walletId: this.wallet.walletId,
+    }).exec();
     const coin = wallet.coins.find((coin) => coin.ticker === ticker);
     return coin.balance === expectedBalance ? true : false;
   };
@@ -144,42 +166,50 @@ class WalletManager {
 
 const transferAsset = async ({ from, to, ticker, balance }) => {
   return new Promise(async (resolve, reject) => {
-    const getWallets = await Wallet.find({
-      walletId: [ObjectId(from), ObjectId(to)],
-    });
-    const fromWallet = getWallets.find(
-      ({ walletId }) => walletId.toString() === from
-    );
-    const toWallet = getWallets.find(
-      ({ walletId }) => walletId.toString() === to
-    );
-    const fromWM = new WalletManager(fromWallet);
-    const toWM = new WalletManager(toWallet);
+    const payload = { from, to, ticker, balance };
+
+    // console.log(payload);
+    const payloadHashed = await dataHash(JSON.stringify(payload));
+
+    await TransferLedger.create({ ...payload, hashed: payloadHashed });
+
+    const isExistHaeshed = await TransferLedger.isExist(payloadHashed);
+    if (isExistHaeshed)
+      reject(`이미 발생된 트랜젝션 : ${from} -> ${to} ${ticker} : ${balance}`);
+
+    // const fromObjectId = typeof from === "object" ? from : ObjectId(from);
+    // const toObjectId = typeof to === "object" ? to : ObjectId(to);
+
+    // const getWallets = await Wallet.find({
+    //   walletId: [fromObjectId, toObjectId],
+    // }).exec();
+
+    // const fromWallet = getWallets.find(
+    //   ({ walletId }) => walletId.toString() === fromObjectId.toString()
+    // );
+    // const toWallet = getWallets.find(
+    //   ({ walletId }) => walletId.toString() === toObjectId.toString()
+    // );
+
+    const fromWM = new WalletManager(from);
+    const toWM = new WalletManager(to);
 
     const fromCheckBalance = fromWM.checkBalance(ticker, balance);
     if (!fromCheckBalance)
       reject(`발송거부 : ${from} -> ${to} ${ticker} : ${balance}`);
 
-    fromWM.decreaseBalance(ticker, balance);
-    toWM.increaseBalance(ticker, balance);
+    const fromBalance = fromWM.getBalane(ticker);
+    const toBalance = toWM.getBalane(ticker);
 
-    const fromExpectedBalance = fromWallet.coins.find(
-      (coin) => coin.ticker === ticker
-    ).balance;
-    const toExpectedBalance = fromWallet.coins.find(
-      (coin) => coin.ticker === ticker
-    ).balance;
+    fromWM.setBalance(ticker, balance - fromBalance);
+    toWM.setBalance(ticker, balance + toBalance);
 
-    if (!fromWM.validateDB(ticker, fromExpectedBalance))
-      reject("이미 반영된 송금트랜잭션입니다.");
+    const isExistHaeshed2 = await TransferLedger.isExist(payloadHashed);
+    if (isExistHaeshed2)
+      reject(`이미 발생된 트랜젝션 : ${from} -> ${to} ${ticker} : ${balance}`);
 
     await fromWM.saveWallet();
     await toWM.saveWallet();
-
-    const fromBalance = fromWM.wallet.coins.find(
-      (coin) => coin.ticker === ticker
-    );
-    const toBalance = toWM.wallet.coins.find((coin) => coin.ticker === ticker);
 
     const msg = `walletId: ${fromWM.wallet.walletId}가 walletId: ${toWM.wallet.walletId}에게 ${ticker}: ${balance}원을 송금하였습니다.`;
     const afterBalance = `${fromWM.wallet.walletId} : ${fromBalance.balance},  ${toWM.wallet.walletId} : ${toBalance.balance}`;
@@ -188,4 +218,4 @@ const transferAsset = async ({ from, to, ticker, balance }) => {
   });
 };
 
-module.exports = { initCoinList, addCoin, WalletManager, transferAsset };
+module.exports = { initCoinList, WalletManager, transferAsset };
