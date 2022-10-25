@@ -1,15 +1,12 @@
 const mongoDb = require("mongoose");
-const {
-  Schema,
-  mongo: { ObjectId },
-} = mongoDb;
+const { Schema } = mongoDb;
 
 //{from , to, ticker, balance, createdAt}
 const transferLedgerSchema = new Schema({
   lastFromTo: { type: Object },
   ticker: { type: String },
   balacne: { type: Number },
-  hashed: { type: String, unique: true },
+  hashed: { type: String },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -20,8 +17,6 @@ transferLedgerSchema.statics.create = function (paylaod) {
 
 transferLedgerSchema.statics.isExist = async function (paylaod) {
   const findResult = await this.find({ hashed: paylaod });
-  // console.log("transferLedgerSchema", { hashed: paylaod });
-  // console.log("transferLedgerSchema findResult:", findResult);
   return findResult.length === 0 ? false : true;
 };
 
