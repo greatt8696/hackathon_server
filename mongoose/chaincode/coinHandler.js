@@ -129,7 +129,7 @@ class WalletManager {
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // coins 리스트에 없을경우 coinlist 추가
     if (!isExistTicker) {
-      const findCoinList = await CoinList.find({ ticker: inputTicker }).exec();
+      const findCoinList = await CoinList.find({ ticker: inputTicker });
       if (findCoinList.isEmpty()) throw new Error("등록되지 않은 코인입니다.");
 
       const { ticker, name } = findCoinList;
@@ -152,13 +152,13 @@ class WalletManager {
     return Wallet.findOneAndUpdate(
       { walletId: this.wallet.walletId },
       { ...this.wallet.immer() }
-    ).exec();
+    );
   };
 
   validateDB = async function (ticker, expectedBalance) {
     const wallet = await Wallet.findOne({
       walletId: this.wallet.walletId,
-    }).exec();
+    });
     const coin = wallet.coins.find((coin) => coin.ticker === ticker);
     return coin.balance === expectedBalance ? true : false;
   };
@@ -182,7 +182,7 @@ const transferAsset = async ({ from, to, ticker, balance }) => {
 
     // const getWallets = await Wallet.find({
     //   walletId: [fromObjectId, toObjectId],
-    // }).exec();
+    // })
 
     // const fromWallet = getWallets.find(
     //   ({ walletId }) => walletId.toString() === fromObjectId.toString()
