@@ -53,24 +53,18 @@ class WalletManager {
   constructor(wallet) {
     if (!wallet) throw new Error("해당 ID의 지갑을 찾지 못하였습니다.");
     this.wallet = wallet.immer();
-    // console.log("@@@@@@@", this.wallet);
-    // this.coinList = makeCoinList(wallet);
   }
 
   checkBalance = function (inputTicker, inputBalance) {
-    // console.log(this.wallet);
-    // console.log("@@@@@@@", this.wallet.coins);
     const list = [...this.wallet.coins];
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     if (!isExistTicker) return false;
     return isExistTicker.balance >= inputBalance ? true : false;
   };
-
   getBalane = (inputTicker) => {
     return this.wallet.coins.immer().find((coin) => coin.ticker === inputTicker)
       .balance;
   };
-
   setBalance = async function (inputTicker, inputBalance) {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
@@ -97,7 +91,6 @@ class WalletManager {
         ),
     ];
   };
-
   increaseBalance = async function (inputTicker, inputBalance) {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
@@ -147,14 +140,12 @@ class WalletManager {
           : coin
       );
   };
-
   saveWallet = async function () {
     return Wallet.findOneAndUpdate(
       { walletId: this.wallet.walletId },
       { ...this.wallet.immer() }
     );
   };
-
   validateDB = async function (ticker, expectedBalance) {
     const wallet = await Wallet.findOne({
       walletId: this.wallet.walletId,
@@ -176,20 +167,6 @@ const transferAsset = async ({ from, to, ticker, balance }) => {
     const isExistHaeshed = await TransferLedger.isExist(payloadHashed);
     if (isExistHaeshed)
       reject(`이미 발생된 트랜젝션 : ${from} -> ${to} ${ticker} : ${balance}`);
-
-    // const fromObjectId = typeof from === "object" ? from : ObjectId(from);
-    // const toObjectId = typeof to === "object" ? to : ObjectId(to);
-
-    // const getWallets = await Wallet.find({
-    //   walletId: [fromObjectId, toObjectId],
-    // })
-
-    // const fromWallet = getWallets.find(
-    //   ({ walletId }) => walletId.toString() === fromObjectId.toString()
-    // );
-    // const toWallet = getWallets.find(
-    //   ({ walletId }) => walletId.toString() === toObjectId.toString()
-    // );
 
     const fromWM = new WalletManager(from);
     const toWM = new WalletManager(to);

@@ -111,19 +111,6 @@ const initDb = async function () {
     });
     console.log(test.length);
   }, 800);
-
-  // const public = allUsers.filter(({ role }) => role === "지자체");
-  // const collector = allUsers.filter(({ role }) => role === "수거");
-  // const landfill = allUsers.filter(({ role }) => role === "매립");
-  // const processing = allUsers.filter(({ role }) => role === "가공");
-
-  // const publicWallet = chooseRandom(public).walletId;
-  // CoinList.isExist("GREEN").then((result) => console.log(result));
-  // console.log(publicWallet);
-  // console.log(public.length);
-  // console.log(collector.length);
-  // console.log(landfill.length);
-  // console.log(processing.length);
 };
 
 module.exports = { connectDb, initDb };
