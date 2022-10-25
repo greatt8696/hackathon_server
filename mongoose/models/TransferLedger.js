@@ -6,16 +6,23 @@ const {
 
 //{from , to, ticker, balance, createdAt}
 const transferLedgerSchema = new Schema({
-  from: { type: ObjectId },
-  to: { type: ObjectId },
-  asset: { type: String },
+  lastFromTo: { type: Object },
+  ticker: { type: String },
   balacne: { type: Number },
+  hashed: { type: String, unique: true },
   createdAt: { type: Date, default: Date.now },
 });
 
 transferLedgerSchema.statics.create = function (paylaod) {
   const recycle = new this(paylaod);
   return recycle.save();
+};
+
+transferLedgerSchema.statics.isExist = async function (paylaod) {
+  const findResult = await this.find({ hashed: paylaod });
+  // console.log("transferLedgerSchema", { hashed: paylaod });
+  // console.log("transferLedgerSchema findResult:", findResult);
+  return findResult.length === 0 ? false : true;
 };
 
 transferLedgerSchema.statics.findAll = function () {

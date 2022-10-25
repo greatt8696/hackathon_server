@@ -2,6 +2,15 @@ const bcrypt = require("bcrypt");
 
 const REPEAT_NUM = 8;
 
+const dataHash = function (inputDatas) {
+  return new Promise((resolve, reject) => {
+    bcrypt.hash(inputDatas, 1, (err, hashedData) => {
+      if (err) reject(err);
+      resolve(hashedData);
+    });
+  });
+};
+
 const encrypt = function (pwd) {
   return new Promise((resolve, reject) => {
     bcrypt.hash(pwd, REPEAT_NUM, (err, hashedPwd) => {
@@ -20,4 +29,4 @@ const compare = function (pwd, encrypted) {
   });
 };
 
-module.exports = { encrypt, compare };
+module.exports = { encrypt, compare, dataHash };

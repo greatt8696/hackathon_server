@@ -13,38 +13,6 @@ class TradeSocket {
       socket.on("tradehelloclient", (arg) => {
         console.log("tradehelloclient 받음", arg);
       });
-
-      setInterval(() =>
-        socket.emit(
-          "tradehello",
-          [100000000 * Math.random(), Date(Date.now())],
-          1
-        )
-      );
-
-      setInterval(() =>
-        socket.emit(
-          "tradehello2",
-          [100000000 * Math.random(), Date(Date.now())],
-          1
-        )
-      );
-
-      setInterval(() =>
-        socket.emit(
-          "tradehello3",
-          [100000000 * Math.random(), Date(Date.now())],
-          1
-        )
-      );
-
-      setInterval(() =>
-        socket.emit(
-          "tradehello4",
-          [100000000 * Math.random(), Date(Date.now())],
-          1
-        )
-      );
     });
   }
   emit = function (emitName, paylaod) {

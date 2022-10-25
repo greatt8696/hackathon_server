@@ -10,6 +10,7 @@ const {
   RecycleLedger,
   RecycleWorldTransactions,
   CoinList,
+  TransferLedger,
 } = require("./models");
 const {
   mongo: { ObjectId },
@@ -25,6 +26,7 @@ const { createBotWallets, addCoin } = require("./chaincode/walletHandler");
 const { createBotUsers } = require("./chaincode/userHandler");
 const { initCoinList, transferAsset } = require("./chaincode/coinHandler");
 const { userSocket } = require("../socket");
+const { hash } = require("../util/crypto");
 
 const connectDb = function () {
   return mongoDb
@@ -66,9 +68,11 @@ const createDbDatas = async () => {
 
   await initCoinList();
 };
-const transferTest = () => {
+
+const transferTest = async () => {
+  const allUsers = await User.findAll();
+
   setInterval(async () => {
-    const allUsers = await User.findAll();
     const sender = chooseRandom(allUsers);
     const receiver = chooseRandom(allUsers);
 
@@ -77,9 +81,12 @@ const transferTest = () => {
       //const balance = parseInt(Math.random() * 500000);
       const balance = parseInt(50000000);
 
+      const from = await Wallet.findOne({ walletId: sender.walletId });
+      const to = await Wallet.findOne({ walletId: receiver.walletId });
+
       const transfer = await transferAsset({
-        from: sender.walletId.toString(),
-        to: receiver.walletId.toString(),
+        from,
+        to,
         ticker: "GREEN",
         balance,
       });
@@ -94,7 +101,7 @@ const transferTest = () => {
 };
 
 const initDb = async function () {
-  //createDbDatas()
+  // createDbDatas();
   transferTest();
 
   setInterval(async () => {
@@ -103,7 +110,7 @@ const initDb = async function () {
       return !coins.filter(({ balance }) => balance < 0).isEmpty();
     });
     console.log(test.length);
-  }, 5337);
+  }, 800);
 
   // const public = allUsers.filter(({ role }) => role === "지자체");
   // const collector = allUsers.filter(({ role }) => role === "수거");
@@ -118,7 +125,5 @@ const initDb = async function () {
   // console.log(landfill.length);
   // console.log(processing.length);
 };
-
-mongoDb.Promise = global.Promise;
 
 module.exports = { connectDb, initDb };

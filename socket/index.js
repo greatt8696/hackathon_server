@@ -20,25 +20,10 @@ socketServer.on("connection", (socket) => {
     socket.emit("hello", [100000000 * Math.random(), Date(Date.now())], 1)
   );
 
-  setInterval(() =>
-    socket.emit("hello2", [100000000 * Math.random(), Date(Date.now())], 1)
-  );
-
-  setInterval(() =>
-    socket.emit("hello3", [100000000 * Math.random(), Date(Date.now())], 1)
-  );
-
-  setInterval(() =>
-    socket.emit("hello4", [100000000 * Math.random(), Date(Date.now())], 1)
-  );
-
   socket.on("joinRoom", ({ joinRoom }) => {
     socket.join(joinRoom);
     socketServer.to(joinRoom).emit("helloTestRoom", "helloTestRoom");
-    console.log(joinRoom)
-    
-    
-    ;
+    console.log(joinRoom);
   });
 });
 
