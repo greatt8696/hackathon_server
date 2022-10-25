@@ -5,7 +5,7 @@ const {
   User,
   TechFund,
   GreenFund,
-  RecycleLedger,
+  RecycleWallet,
   CoinList,
   TransferLedger,
 } = require("../models");
