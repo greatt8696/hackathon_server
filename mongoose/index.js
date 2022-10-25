@@ -7,15 +7,11 @@ const {
   User,
   TechFund,
   GreenFund,
-  RecycleLedger,
+  RecycleWallet,
   RecycleWorldTransactions,
   CoinList,
   TransferLedger,
 } = require("./models");
-const {
-  mongo: { ObjectId },
-} = require("mongoose");
-
 const {
   recycleLedger,
   recycleWorldTransaction,
@@ -24,7 +20,11 @@ const {
 } = require("../recycleSimulation");
 const { createBotWallets, addCoin } = require("./chaincode/walletHandler");
 const { createBotUsers } = require("./chaincode/userHandler");
-const { initCoinList, transferAsset } = require("./chaincode/coinHandler");
+const {
+  initCoinList,
+  transferAsset,
+  WalletManager,
+} = require("./chaincode/coinHandler");
 const { userSocket } = require("../socket");
 const { hash } = require("../util/crypto");
 
@@ -69,24 +69,30 @@ const createDbDatas = async () => {
   await initCoinList();
 };
 
+// api로 옮겨질것
 const transferTest = async () => {
   const allUsers = await User.findAll();
-
   setInterval(async () => {
-    const sender = chooseRandom(allUsers);
-    const receiver = chooseRandom(allUsers);
-
-    // console.log(before.coins[0].balance);
     try {
-      //const balance = parseInt(Math.random() * 500000);
-      const balance = parseInt(50000000);
+      const sender = chooseRandom(allUsers);
+      const receiver = chooseRandom(allUsers);
+
+      const ticker = "GREEN";
+      // const balance = parseInt(50000000);
+      const balance = parseInt(Math.random() * 500000);
 
       const from = await Wallet.findOne({ walletId: sender.walletId });
       const to = await Wallet.findOne({ walletId: receiver.walletId });
 
+      const fromWM = new WalletManager(from);
+      const isCheck = fromWM.checkBalance(ticker, balance);
+      if (!isCheck) throw new Error("유효하지 않은 잔액입니다.");
+      fromWM.decreaseBalance(ticker, balance);
+      const toWM = new WalletManager(to);
+      toWM.increaseBalance(ticker, balance);
+
       const transfer = await transferAsset({
-        from,
-        to,
+        lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
         ticker: "GREEN",
         balance,
       });
@@ -97,7 +103,7 @@ const transferTest = async () => {
     }
 
     // console.log(after.coins[0].balance);
-  }, 100);
+  }, 10);
 };
 
 const initDb = async function () {
@@ -109,6 +115,7 @@ const initDb = async function () {
     const test = allWallets.filter(({ coins }) => {
       return !coins.filter(({ balance }) => balance < 0).isEmpty();
     });
+
     console.log(test.length);
   }, 800);
 };
