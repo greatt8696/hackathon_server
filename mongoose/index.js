@@ -8,7 +8,7 @@ const {
   TechFund,
   GreenFund,
   RecycleWallet,
-  RecycleTransactions,
+  RecycleLedger,
   CoinList,
   TransferLedger,
 } = require("./models");
@@ -27,6 +27,7 @@ const {
 } = require("./chaincode/coinHandler");
 const { userSocket } = require("../socket");
 const { hash } = require("../util/crypto");
+const { createBotRecycleWallets } = require("./chaincode/recycleWalletHandler");
 
 const connectDb = function () {
   return mongoDb
@@ -40,8 +41,8 @@ const connectDb = function () {
 };
 
 const createDbDatas = async () => {
-  await Wallet.deleteAll();
-  await User.deleteAll();
+  // await Wallet.deleteAll();
+  // await User.deleteAll();
   await CoinList.deleteAll();
   await TechFund.deleteAll();
   await GreenFund.deleteAll();
@@ -56,8 +57,15 @@ const createDbDatas = async () => {
     .catch((err) => {
       console.log(err, "Fail: createBotWallets");
     });
+
   createBotUsers(BOT_USER_SIZE)
     .then((result) => console.log("Success: createBotUsers"))
+    .catch((err) => {
+      console.log(err, "Fail: createBotUsers");
+    });
+
+  createBotRecycleWallets(BOT_USER_SIZE)
+    .then((result) => console.log("Success: createBotRecycleWallets"))
     .catch((err) => {
       console.log(err, "Fail: createBotUsers");
     });
@@ -111,6 +119,7 @@ const initDb = async function () {
 
   const allUsers = await User.findAll();
   transferTest(allUsers);
+
   setInterval(async () => {
     const allWallets = await Wallet.findAll();
     const test = allWallets.filter(({ coins }) => {
