@@ -62,7 +62,6 @@ const addCoin = async (walletId, ticker) => {
     { walletId: tempId },
     { coins: newCoins }
   );
-
   const result = await Wallet.findOne({ walletId: tempId });
   console.log("addCoin", result);
 };

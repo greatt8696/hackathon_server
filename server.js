@@ -1,5 +1,4 @@
 require("dotenv").config();
-const { createUid } = require("./util/createRandom");
 
 require("./util/jsonUtil");
 

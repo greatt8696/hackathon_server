@@ -1,7 +1,7 @@
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 
-const recycleTransactionsSchema = new Schema({
+const RecycleLedgerSchema = new Schema({
   recycleTransactionId: { type: String, index: true },
   type: { type: String },
   lastFromTo: { type: Object },
@@ -11,38 +11,38 @@ const recycleTransactionsSchema = new Schema({
   validity: [],
 });
 
-recycleTransactionsSchema.statics.create = function (paylaod) {
+RecycleLedgerSchema.statics.create = function (paylaod) {
   const recycle = new this(paylaod);
   return recycle.save();
 };
 
-recycleTransactionsSchema.statics.isExist = async function (paylaod) {
+RecycleLedgerSchema.statics.isExist = async function (paylaod) {
   const findResult = await this.find({ hashed: paylaod });
   return findResult.length === 0 ? false : true;
 };
-recycleTransactionsSchema.statics.findAll = function () {
+RecycleLedgerSchema.statics.findAll = function () {
   return this.find({});
 };
 
-recycleTransactionsSchema.statics.deleteAll = function () {
+RecycleLedgerSchema.statics.deleteAll = function () {
   return this.deleteMany({});
 };
 
-recycleTransactionsSchema.statics.updateByUid = function (id, payload) {
+RecycleLedgerSchema.statics.updateByUid = function (id, payload) {
   return this.findOneAndUpdate({ id }, payload, { new: true });
 };
 
-recycleTransactionsSchema.statics.deleteByUid = function (id) {
+RecycleLedgerSchema.statics.deleteByUid = function (id) {
   return this.remove({ id });
 };
 
-recycleTransactionsSchema.statics.getWalletByid = function (id) {
+RecycleLedgerSchema.statics.getWalletByid = function (id) {
   return this.remove({ id });
 };
 
-const RecycleTransactions = mongoDb.model(
+const RecycleLedger = mongoDb.model(
   "recycleTransaction",
-  recycleTransactionsSchema
+  RecycleLedgerSchema
 );
 
-module.exports = { RecycleTransactions };
+module.exports = { RecycleLedger };
