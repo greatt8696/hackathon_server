@@ -10,7 +10,7 @@ const UserSchema = new Schema(
     pwd: { type: String },
     name: { type: String },
     role: { type: String },
-    recycleLedgerIds: [{ type: String }],
+    recycleWalletId: { type: ObjectId, unique: true },
     walletId: { type: ObjectId, unique: true },
   },
   { timestamps: true, versionKey: false }

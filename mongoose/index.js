@@ -8,7 +8,7 @@ const {
   TechFund,
   GreenFund,
   RecycleWallet,
-  RecycleWorldTransactions,
+  RecycleTransactions,
   CoinList,
   TransferLedger,
 } = require("./models");
@@ -18,7 +18,7 @@ const {
   techFund,
   greenFund,
 } = require("../recycleSimulation");
-const { createBotWallets, addCoin } = require("./chaincode/walletHandler");
+const { createBotWallets } = require("./chaincode/walletHandler");
 const { createBotUsers } = require("./chaincode/userHandler");
 const {
   initCoinList,
@@ -45,13 +45,9 @@ const createDbDatas = async () => {
   await CoinList.deleteAll();
   await TechFund.deleteAll();
   await GreenFund.deleteAll();
-  await RecycleLedger.deleteAll();
-  await RecycleWorldTransactions.deleteAll();
 
   TechFund.insertMany(techFund);
   GreenFund.insertMany(greenFund);
-  RecycleLedger.insertMany(recycleLedger);
-  RecycleWorldTransactions.insertMany(recycleWorldTransaction);
   console.log("db init 초기화 완료");
 
   const BOT_USER_SIZE = 22222;
@@ -70,15 +66,19 @@ const createDbDatas = async () => {
 };
 
 // api로 옮겨질것
-const transferTest = async () => {
-  const allUsers = await User.findAll();
+const transferTest = async (allUsers) => {
+  // const allUsers = await User.findAll();
+  // const sender = chooseRandom(allUsers);
+  // const receiver = chooseRandom(allUsers);
+  // const ticker = "GREEN";
+  // const balance = parseInt(Math.random() * 500000);
+
   setInterval(async () => {
     try {
+      // const balance = parseInt(50000000);
       const sender = chooseRandom(allUsers);
       const receiver = chooseRandom(allUsers);
-
       const ticker = "GREEN";
-      // const balance = parseInt(50000000);
       const balance = parseInt(Math.random() * 500000);
 
       const from = await Wallet.findOne({ walletId: sender.walletId });
@@ -108,8 +108,9 @@ const transferTest = async () => {
 
 const initDb = async function () {
   // createDbDatas();
-  transferTest();
 
+  const allUsers = await User.findAll();
+  transferTest(allUsers);
   setInterval(async () => {
     const allWallets = await Wallet.findAll();
     const test = allWallets.filter(({ coins }) => {

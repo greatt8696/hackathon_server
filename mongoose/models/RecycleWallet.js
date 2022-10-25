@@ -1,11 +1,16 @@
 const mongoDb = require("mongoose");
-const { ownWasteSchema } = require("./OtherSchema");
-const { Schema } = mongoDb;
+const { ownWasteSchema, iORSchema } = require("./OtherSchema");
+const {
+  Schema,
+  mongo: { ObjectId },
+} = mongoDb;
 
 const recycleWalletSchema = new Schema({
-  recycleWalletId: { type: String, index: true, unique: true },
+  recycleWalletId: { type: ObjectId, index: true, unique: true },
   ownWastes: [ownWasteSchema],
-  recycleTransactionIds: [{ type: String }],
+  iOR: iORSchema, // in / in + out
+  iORHistory: [iORSchema], // [ioR : in / in + out, date:]
+  recycleTransactionIds: [{ type: ObjectId }],
 });
 
 recycleWalletSchema.statics.create = function (paylaod) {

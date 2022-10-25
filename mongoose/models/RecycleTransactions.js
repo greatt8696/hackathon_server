@@ -1,45 +1,48 @@
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 
-const recycleWorldTransactionsSchema = new Schema({
+const recycleTransactionsSchema = new Schema({
   recycleTransactionId: { type: String, index: true },
   type: { type: String },
-  from: { type: String },
-  to: { type: String },
+  lastFromTo: { type: Object },
   weigth: { type: Number },
   createdAt: { type: Date, default: Date.now },
-  recycleType: [{ type: String }],
+  recycleType: { type: String },
   validity: [],
 });
 
-recycleWorldTransactionsSchema.statics.create = function (paylaod) {
-  const RecycleTransactions = new this(paylaod);
-  return RecycleTransactions.save();
+recycleTransactionsSchema.statics.create = function (paylaod) {
+  const recycle = new this(paylaod);
+  return recycle.save();
 };
 
-recycleWorldTransactionsSchema.statics.findAll = function () {
+recycleTransactionsSchema.statics.isExist = async function (paylaod) {
+  const findResult = await this.find({ hashed: paylaod });
+  return findResult.length === 0 ? false : true;
+};
+recycleTransactionsSchema.statics.findAll = function () {
   return this.find({});
 };
 
-recycleWorldTransactionsSchema.statics.deleteAll = function () {
+recycleTransactionsSchema.statics.deleteAll = function () {
   return this.deleteMany({});
 };
 
-recycleWorldTransactionsSchema.statics.updateByUid = function (id, payload) {
+recycleTransactionsSchema.statics.updateByUid = function (id, payload) {
   return this.findOneAndUpdate({ id }, payload, { new: true });
 };
 
-recycleWorldTransactionsSchema.statics.deleteByUid = function (id) {
+recycleTransactionsSchema.statics.deleteByUid = function (id) {
   return this.remove({ id });
 };
 
-recycleWorldTransactionsSchema.statics.getWalletByid = function (id) {
+recycleTransactionsSchema.statics.getWalletByid = function (id) {
   return this.remove({ id });
 };
 
-const RecycleWorldTransactions = mongoDb.model(
-  "recycleWorldTransaction",
-  recycleWorldTransactionsSchema
+const RecycleTransactions = mongoDb.model(
+  "recycleTransaction",
+  recycleTransactionsSchema
 );
 
-module.exports = { RecycleWorldTransactions };
+module.exports = { RecycleTransactions };

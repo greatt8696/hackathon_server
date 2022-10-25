@@ -43,7 +43,17 @@ const createBotUsers = async (userSize) => {
     const name = makeName(idx, role);
     const pwd = "$2b$08$SHqWBDxEgdvxRtSu0udOBuiog93YoctPuEJz9vksEycc5ttcsiJaq"; //123
     const walletId = makeBotObjectId(idx);
-    const botUser = { userId, uid, role, name, pwd, walletId, email };
+    const recycleWalletId = makeBotObjectId(idx);
+    const botUser = {
+      userId,
+      uid,
+      role,
+      name,
+      pwd,
+      walletId,
+      email,
+      recycleWalletId,
+    };
     return botUser;
   });
   return User.insertMany(userList);

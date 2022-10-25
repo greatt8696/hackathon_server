@@ -5,13 +5,13 @@ const { RecycleWallet } = require("./RecycleWallet");
 const { Wallet } = require("./Wallet");
 const { CoinList } = require("./CoinList");
 const { TransferLedger } = require("./TransferLedger");
-const { RecycleWorldTransactions } = require("./RecycleTransactions");
+const { RecycleTransactions } = require("./RecycleTransactions");
 
 module.exports = {
   TransferLedger,
   CoinList,
   Wallet,
-  RecycleWorldTransactions,
+  RecycleTransactions,
   User,
   TechFund,
   GreenFund,

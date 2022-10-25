@@ -1,4 +1,5 @@
 const { compare, encrypt } = require("./util/crypto");
+const constance = require("./mongoose/constance/constance");
 const mongoDb = require("mongoose");
 const { Schema } = mongoDb;
 const { ObjectId } = mongoDb.mongo;
@@ -266,6 +267,17 @@ const techFund = [
   },
 ];
 
+const recyclesList = () => {
+  const { coinList } = constance;
+  const coins = Object.values(coinList).filter(
+    (coin) => coin.name !== "그린코인"
+  );
+
+  return coins.map(({ name, ticker }) => {
+    return { name, ticker, weight: 0 };
+  });
+};
+
 module.exports = {
   user,
   wallet,
@@ -273,4 +285,5 @@ module.exports = {
   recycleWorldTransaction,
   techFund,
   greenFund,
+  recyclesList,
 };

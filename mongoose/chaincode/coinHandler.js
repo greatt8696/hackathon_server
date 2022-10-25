@@ -167,7 +167,7 @@ const transferAsset = async ({ lastFromTo, ticker, balance }) => {
     const fromCheckBalance = fromWM.checkBalance(ticker, balance);
     if (!fromCheckBalance)
       reject(
-        `발송거부 : ${from.wallet} -> ${to.wallet} ${ticker} : ${balance}`
+        `발송거부 유효하지 않은 잔액 : ${from.wallet} -> ${to.wallet} ${ticker} : ${balance}`
       );
 
     const msg = `walletId: ${fromWM.wallet.walletId}가 walletId: ${toWM.wallet.walletId}에게 ${ticker}: ${balance}원을 송금하였습니다.`;

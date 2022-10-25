@@ -6,6 +6,11 @@ const mileStoneSchema = new Schema({
   targetDate: { type: Date, default: Date.now },
 });
 
+const iORSchema = new Schema({
+  iOR: { type: String, default: 0 }, // in / in + out
+  createAt: { type: Date, default: Date.now },
+});
+
 const positionSchema = new Schema(
   {
     lat: { type: Number },
@@ -17,6 +22,7 @@ const positionSchema = new Schema(
 const ownWasteSchema = new Schema(
   {
     name: { type: String },
+    ticker: { type: String },
     weight: { type: Number },
   },
   { _id: false }
@@ -67,4 +73,5 @@ module.exports = {
   rationaleSchema,
   ownWasteSchema,
   rangeSchema,
+  iORSchema,
 };

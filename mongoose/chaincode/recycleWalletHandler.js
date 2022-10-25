@@ -5,6 +5,7 @@ const {
   TechFund,
   GreenFund,
   RecycleLedger,
+  RecycleWallet,
 } = require("../models");
 
 const constance = require("../constance/constance");
@@ -24,47 +25,49 @@ const {
   makerecycleLedgerIds,
   makeBotObjectId,
   makeCoin,
+  createObjectId,
 } = require("../util");
+const { recyclesList } = require("../../recycleSimulation");
 
-const createNewWallet = (idx) => {
-  const walletId = makeId();
+const createNewRecycleWallet = async (idx) => {
+  const walletId = createObjectId();
   const coin = makeCoin();
   const newWallet = {
     walletId,
     coins: [coin],
   };
-  Wallet.create(newWallet);
+  await RecycleWallet.create(newWallet);
 };
-const createBotWallets = (awalletSize) => {
+const createBotRecycleWallets = (awalletSize) => {
   const idxList = Array(awalletSize)
     .fill(false)
     .map((_, idx) => idx);
 
   const newwallets = idxList.map((idx) => {
-    const walletId = makeBotObjectId(idx);
-    const coin = makeCoin({ balance: 100000000 * Math.random() + 100000 });
+    const recycleWalletId = makeBotObjectId(idx);
+    const ownWastes = recyclesList();
     return {
-      walletId,
-      coins: [coin],
+      recycleWalletId,
+      ownWastes,
     };
   });
-  return Wallet.insertMany(newwallets);
+  return RecycleWallet.insertMany(newwallets);
 };
 
 const addCoin = async (walletId, ticker) => {
   const tempId = walletId;
-  const wallet = await Wallet.findOne({ walletId: tempId });
+  const wallet = await RecycleWallet.findOne({ walletId: tempId });
   const oldcoinList = wallet.coins;
   const newCoin = makeCoin(ticker);
   const newCoins = [...oldcoinList, newCoin];
   console.log("addCoin", { ...wallet, coins: newCoins });
-  const update = await Wallet.replaceOne(
+  const update = await RecycleWallet.replaceOne(
     { walletId: tempId },
     { coins: newCoins }
   );
 
-  const result = await Wallet.findOne({ walletId: tempId });
+  const result = await RecycleWallet.findOne({ walletId: tempId });
   console.log("addCoin", result);
 };
 
-module.exports = { createBotWallets };
+module.exports = { createBotRecycleWallets, addCoin };
