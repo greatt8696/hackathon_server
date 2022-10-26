@@ -53,7 +53,6 @@ class RecycleWalletManager {
       .find((waste) => waste.ticker === inputTicker).weight;
   };
 
-
   setweight = async function (inputTicker, inputweight) {
     const list = this.recycleWallet.ownWastes.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
@@ -74,7 +73,9 @@ class RecycleWalletManager {
       ...this.recycleWallet.ownWastes
         .immer()
         .map((waste) =>
-          waste.ticker === inputTicker ? { ...waste, weight: inputweight } : waste
+          waste.ticker === inputTicker
+            ? { ...waste, weight: inputweight }
+            : waste
         ),
     ];
   };
@@ -144,7 +145,9 @@ class RecycleWalletManager {
     const recycleWallet = await recycleWallet.findOne({
       recycleWalletId: this.recycleWallet.recycleWalletId,
     });
-    const waste = recycleWallet.ownWastes.find((waste) => waste.ticker === ticker);
+    const waste = recycleWallet.ownWastes.find(
+      (waste) => waste.ticker === ticker
+    );
     return waste.weight === expectedweight ? true : false;
   };
 }
@@ -180,7 +183,9 @@ const addwaste = async (walletId, ticker) => {
   const oldwasteList = wallet.ownWastes;
   const newwaste = makewaste(ticker);
   const newwastes = [...oldwasteList, newwaste];
+
   console.log("addwaste", { ...wallet, wastes: newwastes });
+
   const update = await RecycleWallet.replaceOne(
     { walletId: tempId },
     { wastes: newwastes }
@@ -225,4 +230,5 @@ module.exports = {
   addwaste,
   createNewRecycleWallet,
   transferRecycle,
+  RecycleWalletManager,
 };
