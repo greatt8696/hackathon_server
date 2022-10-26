@@ -5,7 +5,7 @@ module.exports = {
     transfer: { name: "운송" },
     select: { name: "선별" },
     landfill: { name: "매립" },
-    incineration: { name: "소각" },
+    incinerate: { name: "소각" },
     processing: { name: "가공" },
   },
   recycleLedgerWaste: {

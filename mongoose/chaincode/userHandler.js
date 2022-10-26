@@ -5,6 +5,7 @@ const {
   TechFund,
   GreenFund,
   RecycleLedger,
+  RecycleWallet,
 } = require("../models");
 
 const {
@@ -17,6 +18,27 @@ const {
   makeBotObjectId,
   makeCoin,
 } = require("../util");
+const { WalletManager } = require("./coinHandler");
+const { RecycleWalletManager } = require("./recycleWalletHandler");
+
+class UserManager {
+  constructor(user) {
+    if (!user) throw new Error("해당 ID의 지갑을 찾지 못하였습니다.");
+    this.user = user.immer();
+  }
+
+  getWallet = async function () {
+    const result = await Wallet.findOne({ walletId: this.user.walletId });
+    return new WalletManager(result);
+  };
+
+  getRecyleWallet = async function () {
+    const result = await RecycleWallet.findOne({
+      recycleWalletId: this.user.recycleWalletId,
+    });
+    return new RecycleWalletManager(result);
+  };
+}
 
 const createBotUser = async (idx) => {
   const userId = makeId(idx);
@@ -59,4 +81,4 @@ const createBotUsers = async (userSize) => {
   return User.insertMany(userList);
 };
 
-module.exports = { createBotUsers };
+module.exports = { createBotUsers, UserManager };

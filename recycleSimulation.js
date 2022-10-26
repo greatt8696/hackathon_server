@@ -198,6 +198,7 @@ const greenFund = [
     ],
   },
 ];
+
 const techFund = [
   {
     techFundId: "테크펀드id1",
