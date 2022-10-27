@@ -22,7 +22,7 @@ module.exports = {
     incheonExchange: { name: "인천거래소", ticker: "EXC_INC" },
     gyeongsangdoExchange: { name: "경상도거래소", ticker: "EXC_GSD" },
     jeolladoExchange: { name: "전라도거래소", ticker: "EXC_JLD" },
-    gangwondoExchange: { name: "전라도거래소", ticker: "EXC_GWD" },
+    gangwondoExchange: { name: "강원도거래소", ticker: "EXC_GWD" },
   },
 
   coinList: {
