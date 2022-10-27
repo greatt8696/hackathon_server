@@ -30,6 +30,11 @@ class UserSocket {
         );
         console.log(joinRoom);
       });
+
+
+
+
+      
     });
   }
   emit = function (emitName, paylaod) {
