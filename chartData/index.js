@@ -152,4 +152,10 @@ function upbitSocket() {
   return socket;
 }
 
-export default upbitSocket;
+const sdk = require("api")("@upbit/v1.3.3#1h2zv2al3jq48nm");
+
+sdk
+  .Minute1({ market: "KRW-BTC", count: "200", unit: "5" })
+  .then((res) => console.log(res))
+  .catch((err) => console.error(err));
+module.exports = { upbitSocket, sdk };

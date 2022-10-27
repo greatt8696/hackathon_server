@@ -34,3 +34,5 @@ connectDb().then(() => {
 app.get("/user", async (req, res) => {
   res.send(user);
 });
+
+const chartData = require("./chartData");

@@ -6,7 +6,7 @@ const RecycleLedgerSchema = new Schema({
   type: { type: String },
   from: { type: Object },
   to: { type: Object },
-  weigth: { type: Number },
+  totalweigth: { type: Number },
   createdAt: { type: Date, default: Date.now },
   recycleType: { type: String },
   validity: [],
