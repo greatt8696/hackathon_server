@@ -125,34 +125,36 @@ const recycleTransferBot = async (allUsers) => {
   const ACTION_ORDER_TABLE = new Array(10).fill(false).map((_, idx) => idx);
 
   const recycleAction = {
-    create: async () => {
-      const publicRandom = chooseRandom(publicUsers);
-      const from = new UserManager(createUsers);
-      const to = new UserManager(publicRandom);
+    create: async (ticker, balance) => {
+      try {
+        const publicRandom = chooseRandom(publicUsers);
+        const from = new UserManager(createUsers);
+        const to = new UserManager(publicRandom);
 
-      const fromRecycleWallet = await from.getRecyleWallet();
-      const toRecycleWallet = await to.getRecyleWallet();
+        const fromRecycleWallet = await from.getRecyleWallet();
+        const toRecycleWallet = await to.getRecyleWallet();
 
-      console.log(
-        fromRecycleWallet.recycleWallet,
-        toRecycleWallet.recycleWallet
-      );
+        console.log(
+          fromRecycleWallet.recycleWallet,
+          toRecycleWallet.recycleWallet
+        );
 
-      const fromWM = await from.getWallet();
-      const isCheck = fromWM.checkBalance(ticker, balance);
+        const fromWM = await from.getWallet();
+        const isCheck = fromWM.checkBalance(ticker, balance);
 
-      if (!isCheck) throw new Error("유효하지 않은 잔액입니다.");
+        if (!isCheck) throw new Error("유효하지 않은 잔액입니다.");
 
-      fromWM.decreaseBalance(ticker, balance);
+        fromWM.decreaseBalance(ticker, balance);
 
-      const toWM = await to.getWallet();
-      toWM.increaseBalance(ticker, balance);
+        const toWM = await to.getWallet();
+        toWM.increaseBalance(ticker, balance);
 
-      const transfer = await transferAsset({
-        lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
-        ticker: "GREEN",
-        balance,
-      });
+        const transfer = await transferAsset({
+          lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
+          ticker: "GREEN",
+          balance,
+        });
+      } catch (error) {}
     },
     transfer: () => {
       const transferRandom = chooseRandom(transferUsers);
