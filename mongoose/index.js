@@ -129,12 +129,30 @@ const recycleTransferBot = async (allUsers) => {
       const publicRandom = chooseRandom(publicUsers);
       const from = new UserManager(createUsers);
       const to = new UserManager(publicRandom);
+
       const fromRecycleWallet = await from.getRecyleWallet();
       const toRecycleWallet = await to.getRecyleWallet();
+
       console.log(
-        fromRecycleWallet.recycleWallet.ownWastes,
-        toRecycleWallet.recycleWallet.ownWastes
+        fromRecycleWallet.recycleWallet,
+        toRecycleWallet.recycleWallet
       );
+
+      const fromWM = await from.getWallet();
+      const isCheck = fromWM.checkBalance(ticker, balance);
+
+      if (!isCheck) throw new Error("유효하지 않은 잔액입니다.");
+
+      fromWM.decreaseBalance(ticker, balance);
+
+      const toWM = await to.getWallet();
+      toWM.increaseBalance(ticker, balance);
+
+      const transfer = await transferAsset({
+        lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
+        ticker: "GREEN",
+        balance,
+      });
     },
     transfer: () => {
       const transferRandom = chooseRandom(transferUsers);

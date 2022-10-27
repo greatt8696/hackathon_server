@@ -47,10 +47,18 @@ class RecycleWalletManager {
       .find((waste) => waste.ticker === inputTicker).weight;
   };
 
-  getAllBalane = function (inputTicker) {
+  getAllWastes = function () {
     return this.recycleWallet.ownWastes
       .immer()
-      .find((waste) => waste.ticker === inputTicker).weight;
+      .filter((waste) => waste.ticker < 0);
+  };
+
+  getExistWastes = function () {
+    const existWaste = this.recycleWallet.ownWastes
+      .immer()
+      .filter((waste) => waste.ticker > 0);
+    return;
+    existWaste;
   };
 
   setweight = async function (inputTicker, inputweight) {

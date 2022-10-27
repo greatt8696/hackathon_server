@@ -14,7 +14,6 @@ require("../../util/jsonUtil");
 
 const constance = require("../constance/constance");
 
-
 const { userSocket } = require("../../socket");
 const { dataHash } = require("../../util/crypto");
 
@@ -169,4 +168,4 @@ const transferAsset = async ({ lastFromTo, ticker, balance }) => {
   });
 };
 
-module.exports = { initCoinList, WalletManager, transferAsset };
+module.exports = { initCoinList, transferAsset, WalletManager };

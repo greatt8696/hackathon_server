@@ -105,3 +105,28 @@ const techFund = [
     fundHistories: [{ userId: "테스트용uid2", coin: "green", amount: 220000 }],
   },
 ];
+const maps = [
+  [
+    { lat: 35.17090347158561, lng: 126.74808112312965 },
+    { lat: 37.8772613472204, lng: 128.71249304834552 },
+  ], //37.353703141353975, 129.22885358155085 ~ 35.2950477155348, 128.74324493240002
+  [
+    { lat: 35.2950477155348, lng: 128.74324493240002 },
+    { lat: 37.353703141353975, lng: 129.22885358155085 },
+  ],
+  [
+    //38.33411684402681, 127.12714382175554 ~ 37.97519195698241, 128.4084972405555
+    { lat: 37.97519195698241, lng: 127.12714382175554 },
+    { lat: 38.33411684402681, lng: 128.4084972405555 },
+  ],
+];
+
+const mapsData = maps.map((map) => {
+  const height = map[1].lat - map[0].lat;
+  const width = map[1].lng - map[0].lng;
+  const size = width * height;
+  const range = {lat : Math.random()};
+  return { width, height, size, basePoint: { ...map[0] } };
+});
+
+console.log(mapsData);
