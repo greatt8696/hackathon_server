@@ -207,9 +207,11 @@ const addwaste = async (walletId, ticker) => {
 const transferWaste = async ({ from, to, ticker, weight }) => {
   return new Promise(async (resolve, reject) => {
     const fromRWM = new RecycleWalletManager(from);
-    const fromCheckWeight = fromRWM.checkWeight(ticker, weight);
-    console.log(from);
-    console.log({ from, to, ticker, weight });
+
+    const fromCheckWeight =
+      from.recycleWalletId !== "000000000000000000000000"
+        ? fromRWM.checkWeight(ticker, weight)
+        : true;
 
     if (!fromCheckWeight)
       reject(

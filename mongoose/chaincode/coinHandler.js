@@ -37,7 +37,7 @@ class WalletManager {
   }
 
   checkBalance = function (inputTicker, inputBalance) {
-    console.log(this.wallet);
+    // console.log(this.wallet);
     const list = [...this.wallet.coins];
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     if (!isExistTicker) return false;
