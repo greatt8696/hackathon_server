@@ -4,7 +4,8 @@ const { Schema } = mongoDb;
 const RecycleLedgerSchema = new Schema({
   recycleTransactionId: { type: String, index: true },
   type: { type: String },
-  lastFromTo: { type: Object },
+  from: { type: Object },
+  to: { type: Object },
   weigth: { type: Number },
   createdAt: { type: Date, default: Date.now },
   recycleType: { type: String },
@@ -40,9 +41,6 @@ RecycleLedgerSchema.statics.getWalletByid = function (id) {
   return this.remove({ id });
 };
 
-const RecycleLedger = mongoDb.model(
-  "recycleTransaction",
-  RecycleLedgerSchema
-);
+const RecycleLedger = mongoDb.model("recycleTransaction", RecycleLedgerSchema);
 
 module.exports = { RecycleLedger };

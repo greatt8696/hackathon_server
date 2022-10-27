@@ -101,7 +101,8 @@ const transferAssetBot = async (allUsers) => {
       toWM.increaseBalance(ticker, balance);
 
       const transfer = await transferAsset({
-        lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
+        from: fromWM.wallet,
+        to: toWM.wallet,
         ticker: ticker,
         balance,
       });
@@ -133,7 +134,6 @@ const recycleTransferBot = async (allUsers) => {
         const publicRandom = chooseRandom(publicUsers);
         const from = new UserManager(createUsers);
         const to = new UserManager(publicRandom);
-
         const fromRWM = await from.getRecyleWallet();
         const toRWM = await to.getRecyleWallet();
 
@@ -152,16 +152,25 @@ const recycleTransferBot = async (allUsers) => {
         const isCheck = fromRWM.checkWeight(ticker, randomWeight);
 
         if (!isCheck) throw new Error("유효하지 않은 재활용입출요청입니다.");
+
         fromRWM.decreaseWeight(ticker, randomWeight);
         toRWM.increaseWeight(ticker, randomWeight);
 
         const transfer = await transferWaste({
-          lastFromTo: { from: fromRWM.recycleWallet, to: toRWM.recycleWallet },
+          from: fromRWM.recycleWallet,
+          to: toRWM.recycleWallet,
           ticker,
           randomWeight,
         });
 
-        console.log(transfer);
+        console.log("@@@@@@@@@@@@@@@@@@@@@", {
+          from: fromRWM.recycleWallet,
+          to: toRWM.recycleWallet,
+          ticker,
+          randomWeight,
+        });
+
+        userSocket.emit("recycle", transfer);
       } catch (error) {
         console.error(error);
       }
@@ -214,8 +223,6 @@ const recycleTransferBot = async (allUsers) => {
     const landfillRandom = chooseRandom(landfillUsers);
     const incinerateRandom = chooseRandom(incinerateUsers);
     const processRandom = chooseRandom(processUsers);
-
-    userSocket.emit("recycle", transfer);
 
     await recycleBotAction.create();
   }, 500);

@@ -153,12 +153,12 @@ class WalletManager {
   };
 }
 
-const transferAsset = async ({ lastFromTo, ticker, balance }) => {
+const transferAsset = async ({ from, to, ticker, balance }) => {
   return new Promise(async (resolve, reject) => {
-    const payload = { lastFromTo, ticker, balance };
+    const payload = { from, to, ticker, balance };
     const hashed = await dataHash(payload);
-    const transferred = await TransferLedger.create({ ...payload, hashed });
-    const { from, to } = transferred.lastFromTo;
+    await TransferLedger.create({ ...payload, hashed });
+
     const fromWM = new WalletManager(from);
     const toWM = new WalletManager(to);
 
@@ -177,7 +177,7 @@ const transferAsset = async ({ lastFromTo, ticker, balance }) => {
       ticker
     )},  ${toWM.wallet.walletId} : ${toWM.getBalane(ticker)}`;
 
-    resolve({ fromWM, toWM, ticker, balance, msg, afterBalance });
+    resolve({ from, to, ticker, balance, msg, afterBalance });
   });
 };
 

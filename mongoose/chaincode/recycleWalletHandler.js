@@ -193,7 +193,7 @@ const addwaste = async (walletId, ticker) => {
   const newwaste = makewaste(ticker);
   const newwastes = [...oldwasteList, newwaste];
 
-  console.log("addwaste", { ...wallet, wastes: newwastes });
+  // console.log("addwaste", { ...wallet, wastes: newwastes });
 
   const update = await RecycleWallet.replaceOne(
     { walletId: tempId },
@@ -204,24 +204,28 @@ const addwaste = async (walletId, ticker) => {
   console.log("addwaste", result);
 };
 
-const transferWaste = async ({ lastFromTo, ticker, weight }) => {
+const transferWaste = async ({ from, to, ticker, weight }) => {
   return new Promise(async (resolve, reject) => {
-    const payload = { lastFromTo, ticker, weight };
-    const hashed = await dataHash(payload);
-    console.log({ ...payload, hashed });
-    const transferred = await RecycleLedger.create({ ...payload, hashed });
-    const { from, to } = transferred.lastFromTo;
     const fromRWM = new RecycleWalletManager(from);
+    const fromCheckWeight = fromRWM.checkWeight(ticker, weight);
+    console.log(from);
+    console.log({ from, to, ticker, weight });
+
+    if (!fromCheckWeight)
+      reject(
+        `발송거부 유효하지 않은 폐기물량 : ${from.recycleWalletId} -> ${to.recycleWalletId} 
+        ${ticker} : ${weight}`
+      );
+
+    const payload = { from, to, ticker, weight };
+    const hashed = await dataHash(payload);
+    // console.log({ ...payload, hashed });
+    await RecycleLedger.create({ ...payload, hashed });
+
     const toRWM = new RecycleWalletManager(to);
 
     await fromRWM.saveRecycleWallet();
     await toRWM.saveRecycleWallet();
-
-    const fromCheckWeight = fromRWM.checkWeight(ticker, weight);
-    if (!fromCheckWeight)
-      reject(
-        `발송거부 유효하지 않은 폐기물량 : ${from.wallet} -> ${to.wallet} ${ticker} : ${weight}`
-      );
 
     const msg = `recycleWalletId: ${fromRWM.recycleWallet.recycleWalletId}가 recycleWalletId: ${toRWM.recycleWallet.recycleWalletId}에게 ${ticker}: ${weight}원을 송금하였습니다.`;
     const afterWeight = `${

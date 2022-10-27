@@ -3,7 +3,8 @@ const { Schema } = mongoDb;
 
 //{from , to, ticker, balance, createdAt}
 const transferLedgerSchema = new Schema({
-  lastFromTo: { type: Object },
+  from: { type: Object },
+  to: { type: Object },
   ticker: { type: String },
   balacne: { type: Number },
   hashed: { type: String },
