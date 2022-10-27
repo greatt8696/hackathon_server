@@ -1,6 +1,5 @@
 const {
   Wallet,
-  RecycleWorldTransactions,
   User,
   TechFund,
   GreenFund,

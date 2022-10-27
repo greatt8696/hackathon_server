@@ -1,7 +1,6 @@
 require("dotenv").config();
 const {
   Wallet,
-  RecycleWorldTransactions,
   User,
   TechFund,
   GreenFund,
@@ -38,15 +37,23 @@ class WalletManager {
   }
 
   checkBalance = function (inputTicker, inputBalance) {
+    console.log(this.wallet);
     const list = [...this.wallet.coins];
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     if (!isExistTicker) return false;
     return isExistTicker.balance >= inputBalance ? true : false;
   };
+
   getBalane = function (inputTicker) {
     return this.wallet.coins.immer().find((coin) => coin.ticker === inputTicker)
       .balance;
   };
+
+  getCoins = function () {
+    // ["111","111","111","111"]
+    return this.wallet.coins.immer().map((coin) => coin.ticker);
+  };
+
   setBalance = async function (inputTicker, inputBalance) {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
@@ -63,6 +70,7 @@ class WalletManager {
         { ticker, name, balance: 0 },
       ];
     }
+
     this.wallet.coins = [
       ...this.wallet.coins
         .immer()
@@ -99,10 +107,12 @@ class WalletManager {
         ),
     ];
   };
+
   decreaseBalance = async function (inputTicker, inputBalance) {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // coins 리스트에 없을경우 coinlist 추가
+
     if (!isExistTicker) {
       // console.log("before findCoinList", inputTicker);
       const findCoinList = await CoinList.find({ ticker: inputTicker });
@@ -115,6 +125,7 @@ class WalletManager {
         { ticker, name, balance: 0 },
       ];
     }
+
     this.wallet.coins = [
       ...this.wallet.coins
         .immer()
@@ -125,12 +136,14 @@ class WalletManager {
         ),
     ];
   };
+
   saveWallet = async function () {
     return Wallet.findOneAndUpdate(
       { walletId: this.wallet.walletId },
       { ...this.wallet.immer() }
     );
   };
+
   validateDB = async function (ticker, expectedBalance) {
     const wallet = await Wallet.findOne({
       walletId: this.wallet.walletId,
@@ -144,7 +157,6 @@ const transferAsset = async ({ lastFromTo, ticker, balance }) => {
   return new Promise(async (resolve, reject) => {
     const payload = { lastFromTo, ticker, balance };
     const hashed = await dataHash(payload);
-    // console.log({ ...payload, hashed });
     const transferred = await TransferLedger.create({ ...payload, hashed });
     const { from, to } = transferred.lastFromTo;
     const fromWM = new WalletManager(from);
@@ -156,7 +168,8 @@ const transferAsset = async ({ lastFromTo, ticker, balance }) => {
     const fromCheckBalance = fromWM.checkBalance(ticker, balance);
     if (!fromCheckBalance)
       reject(
-        `발송거부 유효하지 않은 잔액 : ${from.wallet} -> ${to.wallet} ${ticker} : ${balance}`
+        `발송거부 유효하지 않은 잔액 : 
+        ${from.wallet} -> ${to.wallet}  ${ticker} : ${balance}`
       );
 
     const msg = `walletId: ${fromWM.wallet.walletId}가 walletId: ${toWM.wallet.walletId}에게 ${ticker}: ${balance}원을 송금하였습니다.`;

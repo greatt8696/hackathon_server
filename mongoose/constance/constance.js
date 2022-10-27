@@ -30,6 +30,12 @@ module.exports = {
       name: "그린코인",
       ticker: "GREEN",
     },
+
+    esgPoint: {
+      name: "ESG포인트",
+      ticker: "ESG",
+    },
+
     paper: {
       name: "폐지",
       ticker: "PAPE",

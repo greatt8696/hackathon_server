@@ -29,6 +29,7 @@ const { userSocket } = require("../socket");
 const { hash } = require("../util/crypto");
 const {
   createBotRecycleWallets,
+  transferWaste,
   RecycleWalletManager,
 } = require("./chaincode/recycleWalletHandler");
 
@@ -82,24 +83,26 @@ const transferAssetBot = async (allUsers) => {
     try {
       const sender = chooseRandom(allUsers);
       const receiver = chooseRandom(allUsers);
-      const ticker = "GREEN";
-      const balance = parseInt(Math.random() * 500000);
 
       const from = new UserManager(sender);
-      const to = new UserManager(receiver);
-
       const fromWM = await from.getWallet();
+      const to = new UserManager(receiver);
+      const toWM = await to.getWallet();
+
+      const chooseRandomTicker = chooseRandom(fromWM.getCoins());
+
+      const ticker = chooseRandomTicker;
+      const balance = parseInt(Math.random() * 500000);
+
       const isCheck = fromWM.checkBalance(ticker, balance);
       if (!isCheck) throw new Error("유효하지 않은 잔액입니다.");
 
       fromWM.decreaseBalance(ticker, balance);
-
-      const toWM = await to.getWallet();
       toWM.increaseBalance(ticker, balance);
 
       const transfer = await transferAsset({
         lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
-        ticker: "GREEN",
+        ticker: ticker,
         balance,
       });
 
@@ -108,7 +111,7 @@ const transferAssetBot = async (allUsers) => {
       console.log(error);
       userSocket.emit("transfer", { reject: error });
     }
-  }, 100);
+  }, 500);
 };
 
 const recycleTransferBot = async (allUsers) => {
@@ -121,40 +124,47 @@ const recycleTransferBot = async (allUsers) => {
   const incinerateUsers = allUsers.filter(({ role }) => role === "소각");
   const processUsers = allUsers.filter(({ role }) => role === "가공");
 
-  const SELECT_RECYCLE = [25, 50, 100];
+  const SELECT_WEIGHT = [25, 50, 100];
   const ACTION_ORDER_TABLE = new Array(10).fill(false).map((_, idx) => idx);
 
-  const recycleAction = {
-    create: async (ticker, balance) => {
+  const recycleBotAction = {
+    create: async () => {
       try {
         const publicRandom = chooseRandom(publicUsers);
         const from = new UserManager(createUsers);
         const to = new UserManager(publicRandom);
 
-        const fromRecycleWallet = await from.getRecyleWallet();
-        const toRecycleWallet = await to.getRecyleWallet();
+        const fromRWM = await from.getRecyleWallet();
+        const toRWM = await to.getRecyleWallet();
 
-        console.log(
-          fromRecycleWallet.recycleWallet,
-          toRecycleWallet.recycleWallet
+        const fromWasteList = toRWM.recycleWallet.ownWastes.map(
+          (waste) => waste.ticker
         );
 
-        const fromWM = await from.getWallet();
-        const isCheck = fromWM.checkBalance(ticker, balance);
+        const ticker = chooseRandom(fromWasteList);
 
-        if (!isCheck) throw new Error("유효하지 않은 잔액입니다.");
+        const fromWasteWeight = toRWM.recycleWallet.ownWastes.find(
+          (waste) => waste.ticker === ticker
+        ).weight;
 
-        fromWM.decreaseBalance(ticker, balance);
+        const randomWeight = fromWasteWeight * chooseRandom(SELECT_WEIGHT);
 
-        const toWM = await to.getWallet();
-        toWM.increaseBalance(ticker, balance);
+        const isCheck = fromRWM.checkWeight(ticker, randomWeight);
 
-        const transfer = await transferAsset({
-          lastFromTo: { from: fromWM.wallet, to: toWM.wallet },
-          ticker: "GREEN",
-          balance,
+        if (!isCheck) throw new Error("유효하지 않은 재활용입출요청입니다.");
+        fromRWM.decreaseWeight(ticker, randomWeight);
+        toRWM.increaseWeight(ticker, randomWeight);
+
+        const transfer = await transferWaste({
+          lastFromTo: { from: fromRWM.recycleWallet, to: toRWM.recycleWallet },
+          ticker,
+          randomWeight,
         });
-      } catch (error) {}
+
+        console.log(transfer);
+      } catch (error) {
+        console.error(error);
+      }
     },
     transfer: () => {
       const transferRandom = chooseRandom(transferUsers);
@@ -176,9 +186,24 @@ const recycleTransferBot = async (allUsers) => {
       const from = new UserManager(collectRandom);
       const to = new UserManager(selectRandom);
     },
-    landfill: () => {},
-    incinerate: () => {},
-    process: () => {},
+    landfill: () => {
+      const collectRandom = chooseRandom(collectUsers);
+      const selectRandom = chooseRandom(selectUsers);
+      const from = new UserManager(collectRandom);
+      const to = new UserManager(selectRandom);
+    },
+    incinerate: () => {
+      const collectRandom = chooseRandom(collectUsers);
+      const selectRandom = chooseRandom(selectUsers);
+      const from = new UserManager(collectRandom);
+      const to = new UserManager(selectRandom);
+    },
+    process: () => {
+      const collectRandom = chooseRandom(collectUsers);
+      const selectRandom = chooseRandom(selectUsers);
+      const from = new UserManager(collectRandom);
+      const to = new UserManager(selectRandom);
+    },
   };
 
   setInterval(async () => {
@@ -190,16 +215,10 @@ const recycleTransferBot = async (allUsers) => {
     const incinerateRandom = chooseRandom(incinerateUsers);
     const processRandom = chooseRandom(processUsers);
 
-    console.log(publicRandom.recycleWalletId);
-    console.log(collectRandom.recycleWalletId);
-    console.log(transferRandom.recycleWalletId);
-    console.log(selectRandom.recycleWalletId);
-    console.log(landfillRandom.recycleWalletId);
-    console.log(incinerateRandom.recycleWalletId);
-    console.log(processRandom.recycleWalletId);
+    userSocket.emit("recycle", transfer);
 
-    await recycleAction.create();
-  }, 100);
+    await recycleBotAction.create();
+  }, 500);
 };
 
 const initDb = async function () {

@@ -27,6 +27,7 @@ const {
   createObjectId,
 } = require("../util");
 const { recyclesList } = require("../../recycleSimulation");
+const { dataHash } = require("../../util/crypto");
 
 class RecycleWalletManager {
   constructor(recycleWallet) {
@@ -61,7 +62,7 @@ class RecycleWalletManager {
     existWaste;
   };
 
-  setweight = async function (inputTicker, inputweight) {
+  setWeight = async function (inputTicker, inputweight) {
     const list = this.recycleWallet.ownWastes.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // wastes 리스트에 없을경우 wastelist 추가
@@ -88,7 +89,7 @@ class RecycleWalletManager {
     ];
   };
 
-  increaseweight = async function (inputTicker, inputweight) {
+  increaseWeight = async function (inputTicker, inputweight) {
     const list = this.recycleWallet.ownWastes.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // wastes 리스트에 없을경우 wastelist 추가
@@ -115,7 +116,7 @@ class RecycleWalletManager {
     ];
   };
 
-  decreaseweight = async function (inputTicker, inputweight) {
+  decreaseWeight = async function (inputTicker, inputweight) {
     const list = this.recycleWallet.ownWastes.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // wastes 리스트에 없을경우 wastelist 추가
@@ -143,14 +144,14 @@ class RecycleWalletManager {
   };
 
   saveRecycleWallet = async function () {
-    return recycleWallet.findOneAndUpdate(
+    return RecycleWallet.findOneAndUpdate(
       { recycleWalletId: this.recycleWallet.recycleWalletId },
       { ...this.recycleWallet.immer() }
     );
   };
 
   validateDB = async function (ticker, expectedweight) {
-    const recycleWallet = await recycleWallet.findOne({
+    const recycleWallet = await RecycleWallet.findOne({
       recycleWalletId: this.recycleWallet.recycleWalletId,
     });
     const waste = recycleWallet.ownWastes.find(
@@ -203,33 +204,33 @@ const addwaste = async (walletId, ticker) => {
   console.log("addwaste", result);
 };
 
-const transferRecycle = async ({ lastFromTo, ticker, weight }) => {
+const transferWaste = async ({ lastFromTo, ticker, weight }) => {
   return new Promise(async (resolve, reject) => {
     const payload = { lastFromTo, ticker, weight };
     const hashed = await dataHash(payload);
-    // console.log({ ...payload, hashed });
+    console.log({ ...payload, hashed });
     const transferred = await RecycleLedger.create({ ...payload, hashed });
     const { from, to } = transferred.lastFromTo;
-    const fromWM = new RecycleWalletManager(from);
-    const toWM = new RecycleWalletManager(to);
+    const fromRWM = new RecycleWalletManager(from);
+    const toRWM = new RecycleWalletManager(to);
 
-    await fromWM.saveRecycleWallet();
-    await toWM.saveRecycleWallet();
+    await fromRWM.saveRecycleWallet();
+    await toRWM.saveRecycleWallet();
 
-    const fromCheckWeight = fromWM.checkWeight(ticker, weight);
+    const fromCheckWeight = fromRWM.checkWeight(ticker, weight);
     if (!fromCheckWeight)
       reject(
-        `발송거부 유효하지 않은 잔액 : ${from.wallet} -> ${to.wallet} ${ticker} : ${weight}`
+        `발송거부 유효하지 않은 폐기물량 : ${from.wallet} -> ${to.wallet} ${ticker} : ${weight}`
       );
 
-    const msg = `recycleWalletId: ${fromWM.recycleWallet.recycleWalletId}가 recycleWalletId: ${toWM.recycleWallet.recycleWalletId}에게 ${ticker}: ${weight}원을 송금하였습니다.`;
+    const msg = `recycleWalletId: ${fromRWM.recycleWallet.recycleWalletId}가 recycleWalletId: ${toRWM.recycleWallet.recycleWalletId}에게 ${ticker}: ${weight}원을 송금하였습니다.`;
     const afterWeight = `${
-      fromWM.recycleWallet.recycleWalletId
-    } : ${fromWM.getBalane(ticker)},  ${
-      toWM.recycleWallet.recycleWalletId
-    } : ${toWM.getBalane(ticker)}`;
+      fromRWM.recycleWallet.recycleWalletId
+    } : ${fromRWM.getBalane(ticker)},  ${
+      toRWM.recycleWallet.recycleWalletId
+    } : ${toRWM.getBalane(ticker)}`;
 
-    resolve({ fromWM, toWM, ticker, weight, msg, afterWeight });
+    resolve({ fromRWM, toRWM, ticker, weight, msg, afterWeight });
   });
 };
 
@@ -237,6 +238,6 @@ module.exports = {
   createBotRecycleWallets,
   addwaste,
   createNewRecycleWallet,
-  transferRecycle,
+  transferWaste,
   RecycleWalletManager,
 };

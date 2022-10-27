@@ -26,12 +26,11 @@ app.use(bodyParser.json());
 
 app.use("/recycle", recycleRouter);
 
-app.listen(SERVER_PORT, () => console.log("Running Server"));
+app.listen(3600, () => console.log("Running Server"));
 
 connectDb().then(() => {
   initDb();
 });
 app.get("/user", async (req, res) => {
-  const user = await Post.find({});
   res.send(user);
 });
