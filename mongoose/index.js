@@ -125,7 +125,7 @@ const recycleTransferBot = async (allUsers) => {
   const incinerateUsers = allUsers.filter(({ role }) => role === "소각");
   const processUsers = allUsers.filter(({ role }) => role === "가공");
 
-  const SELECT_WEIGHT = [25, 50, 100];
+  const SELECT_WEIGHT = [0.25, 0.5, 1];
   const ACTION_ORDER_TABLE = new Array(10).fill(false).map((_, idx) => idx);
 
   const recycleBotAction = {
@@ -147,13 +147,8 @@ const recycleTransferBot = async (allUsers) => {
           (waste) => waste.ticker === ticker
         ).weight;
 
-        const randomWeight = fromWasteWeight * chooseRandom(SELECT_WEIGHT);
+        const randomWeight = 10000;
 
-        const isCheck = fromRWM.checkWeight(ticker, randomWeight);
-
-        if (!isCheck) throw new Error("유효하지 않은 재활용입출요청입니다.");
-
-        fromRWM.decreaseWeight(ticker, randomWeight);
         toRWM.increaseWeight(ticker, randomWeight);
 
         const transfer = await transferWaste({
@@ -163,12 +158,7 @@ const recycleTransferBot = async (allUsers) => {
           randomWeight,
         });
 
-        console.log("@@@@@@@@@@@@@@@@@@@@@", {
-          from: fromRWM.recycleWallet,
-          to: toRWM.recycleWallet,
-          ticker,
-          randomWeight,
-        });
+        // console.log(toRWM.recycleWallet, "@@@@@@@@@@@@@@@@@@@@@create");
 
         userSocket.emit("recycle", transfer);
       } catch (error) {
@@ -183,31 +173,171 @@ const recycleTransferBot = async (allUsers) => {
       const from = new UserManager(fromRandom);
       const to = new UserManager(toRandom);
     },
-    collect: () => {
-      const publicRandom = chooseRandom(publicUsers);
-      const collectRandom = chooseRandom(collectUsers);
-      const from = new UserManager(publicRandom);
-      const to = new UserManager(collectRandom);
+
+    collect: async () => {
+      try {
+        const publicRandom = chooseRandom(publicUsers);
+        const collectRandom = chooseRandom(collectUsers);
+        const from = new UserManager(publicRandom);
+        const to = new UserManager(collectRandom);
+        const fromRWM = await from.getRecyleWallet();
+        const toRWM = await to.getRecyleWallet();
+
+        const fromExistWastes = fromRWM.recycleWallet.ownWastes.filter(
+          (waste) => waste.weight > 0
+        );
+
+        const Lists = fromExistWastes.map((wastes) => wastes.ticker);
+
+        const ticker = chooseRandom(Lists);
+
+        const tempWeight = fromRWM.recycleWallet.ownWastes.find(
+          (waste) => waste.ticker === ticker
+        ).weight;
+
+        const fromWasteWeight = tempWeight !== undefined ? tempWeight : 0;
+
+        const randomWeight = fromWasteWeight * chooseRandom(SELECT_WEIGHT);
+
+        const isCheck = fromRWM.checkWeight(ticker, randomWeight);
+        if (!isCheck) throw new Error("유효하지 않은 재활용입출요청입니다.");
+
+        fromRWM.decreaseWeight(ticker, randomWeight);
+        toRWM.increaseWeight(ticker, randomWeight);
+
+        // console.log("@@@@@@", fromWasteWeight);
+        const transfer = await transferWaste({
+          from: fromRWM.recycleWallet,
+          to: toRWM.recycleWallet,
+          ticker,
+          weight: randomWeight,
+        });
+
+        // console.log("@@@@@@@@@@@@@@@@@@@@@collect", {
+        //   from: fromRWM.recycleWallet,
+        //   to: toRWM.recycleWallet,
+        //   ticker,
+        //   weight: randomWeight,
+        // });
+
+        console.log("recycle  성공");
+        userSocket.emit("recycle", transfer);
+      } catch (error) {
+        console.error(error);
+      }
     },
-    select: () => {
+
+    select: async () => {
+      try {
+        const collectRandom = chooseRandom(collectUsers);
+        const selectRandom = chooseRandom(selectUsers);
+        const from = new UserManager(collectRandom);
+        const to = new UserManager(selectRandom);
+        const fromRWM = await from.getRecyleWallet();
+        const toRWM = await to.getRecyleWallet();
+
+        const fromExistWastes = fromRWM.recycleWallet.ownWastes.filter(
+          (waste) => waste.weight > 0
+        );
+
+        const Lists = fromExistWastes.map((wastes) => wastes.ticker);
+
+        const ticker = chooseRandom(Lists);
+
+        const tempWeight = fromRWM.recycleWallet.ownWastes.find(
+          (waste) => waste.ticker === ticker
+        ).weight;
+
+        const fromWasteWeight = tempWeight !== undefined ? tempWeight : 0;
+
+        const randomWeight = fromWasteWeight * chooseRandom(SELECT_WEIGHT);
+
+        const isCheck = fromRWM.checkWeight(ticker, randomWeight);
+        if (!isCheck) throw new Error("유효하지 않은 재활용입출요청입니다.");
+
+        fromRWM.decreaseWeight(ticker, randomWeight);
+        toRWM.increaseWeight(ticker, randomWeight);
+
+        // console.log("@@@@@@", fromWasteWeight);
+        const transfer = await transferWaste({
+          from: fromRWM.recycleWallet,
+          to: toRWM.recycleWallet,
+          ticker,
+          weight: randomWeight,
+        });
+
+        // console.log("@@@@@@@@@@@@@@@@@@@@@collect", {
+        //   from: fromRWM.recycleWallet,
+        //   to: toRWM.recycleWallet,
+        //   ticker,
+        //   weight: randomWeight,
+        // });
+
+        console.log("recycle  성공");
+        userSocket.emit("recycle", transfer);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    landfill: async () => {
       const collectRandom = chooseRandom(collectUsers);
       const selectRandom = chooseRandom(selectUsers);
       const from = new UserManager(collectRandom);
       const to = new UserManager(selectRandom);
     },
-    landfill: () => {
-      const collectRandom = chooseRandom(collectUsers);
-      const selectRandom = chooseRandom(selectUsers);
-      const from = new UserManager(collectRandom);
-      const to = new UserManager(selectRandom);
+    incinerate: async () => {
+      try {
+        const collectRandom = chooseRandom([...collectUsers, ...selectUsers]);
+        const incinerateRandom = chooseRandom(incinerateUsers);
+        const from = new UserManager(collectRandom);
+        const to = new UserManager(incinerateRandom);
+        const fromRWM = await from.getRecyleWallet();
+        const toRWM = await to.getRecyleWallet();
+
+        const fromExistWastes = fromRWM.recycleWallet.ownWastes.filter(
+          (waste) => waste.weight > 0
+        );
+
+        const Lists = fromExistWastes.map((wastes) => wastes.ticker);
+
+        const ticker = chooseRandom(Lists);
+
+        const tempWeight = fromRWM.recycleWallet.ownWastes.find(
+          (waste) => waste.ticker === ticker
+        ).weight;
+
+        const fromWasteWeight = tempWeight !== undefined ? tempWeight : 0;
+
+        const randomWeight = fromWasteWeight * chooseRandom(SELECT_WEIGHT);
+
+        const isCheck = fromRWM.checkWeight(ticker, randomWeight);
+        if (!isCheck) throw new Error("유효하지 않은 재활용입출요청입니다.");
+
+        fromRWM.decreaseWeight(ticker, randomWeight);
+        toRWM.increaseWeight(ticker, randomWeight);
+
+        // console.log("@@@@@@", fromWasteWeight);
+        const transfer = await transferWaste({
+          from: fromRWM.recycleWallet,
+          to: toRWM.recycleWallet,
+          ticker,
+          weight: randomWeight,
+        });
+
+        // console.log("@@@@@@@@@@@@@@@@@@@@@collect", {
+        //   from: fromRWM.recycleWallet,
+        //   to: toRWM.recycleWallet,
+        //   ticker,
+        //   weight: randomWeight,
+        // });
+
+        console.log("recycle  성공");
+        userSocket.emit("recycle", transfer);
+      } catch (error) {
+        console.error(error);
+      }
     },
-    incinerate: () => {
-      const collectRandom = chooseRandom(collectUsers);
-      const selectRandom = chooseRandom(selectUsers);
-      const from = new UserManager(collectRandom);
-      const to = new UserManager(selectRandom);
-    },
-    process: () => {
+    process: async () => {
       const collectRandom = chooseRandom(collectUsers);
       const selectRandom = chooseRandom(selectUsers);
       const from = new UserManager(collectRandom);
@@ -225,6 +355,8 @@ const recycleTransferBot = async (allUsers) => {
     const processRandom = chooseRandom(processUsers);
 
     await recycleBotAction.create();
+    await recycleBotAction.create();
+    await recycleBotAction.collect();
   }, 500);
 };
 
