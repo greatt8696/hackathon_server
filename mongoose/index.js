@@ -209,7 +209,7 @@ const recycleTransferBot = async (allUsers) => {
         //   weight: randomWeight,
         // });
 
-        console.log("collect  성공");
+        // console.log("collect  성공");
         userSocket.emit("recycle", transfer);
       } catch (error) {
         console.error(error);
@@ -261,7 +261,7 @@ const recycleTransferBot = async (allUsers) => {
         //   weight: randomWeight,
         // });
 
-        console.log("select  성공");
+        // console.log("select  성공");
         userSocket.emit("recycle", transfer);
       } catch (error) {}
     },
@@ -311,7 +311,7 @@ const recycleTransferBot = async (allUsers) => {
         //   weight: randomWeight,
         // });
 
-        console.log("landfill  성공");
+        // console.log("landfill  성공");
         userSocket.emit("recycle", transfer);
       } catch (error) {}
     },
@@ -361,7 +361,7 @@ const recycleTransferBot = async (allUsers) => {
         //   weight: randomWeight,
         // });
 
-        console.log("incinerate  성공");
+        // console.log("incinerate  성공");
         userSocket.emit("recycle", transfer);
       } catch (error) {}
     },
@@ -411,7 +411,7 @@ const recycleTransferBot = async (allUsers) => {
         //   weight: randomWeight,
         // });
 
-        console.log("process  성공");
+        // console.log("process  성공");
         userSocket.emit("recycle", transfer);
       } catch (error) {}
     },
