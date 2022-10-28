@@ -110,7 +110,6 @@ const transferAssetBot = async (allUsers) => {
       userSocket.emit("transfer", transfer);
     } catch (error) {
       console.log(error);
-      userSocket.emit("transfer", { reject: error });
     }
   }, 500);
 };
