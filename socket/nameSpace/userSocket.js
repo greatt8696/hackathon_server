@@ -14,6 +14,14 @@ class UserSocket {
         console.log("userhelloclient 받음", arg);
       });
 
+      // setInterval(() =>
+      //   socket.emit(
+      //     "userhello",
+      //     [100000000 * Math.random(), Date(Date.now())],
+      //     1
+      //   )
+      // );
+
       socket.on("joinRoom", ({ joinRoom }) => {
         socket.join(joinRoom);
         SocketServer.to(joinRoom).emit(
