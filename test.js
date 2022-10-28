@@ -130,195 +130,112 @@ const axios = require("axios");
 //   const range = { lat: Math.random() };
 //   return { width, height, size, basePoint: { ...map[0] } };
 // });
-
-const { WebSocket } = require("ws");
-
-// axios
-//   .get(
-//     "https://api.upbit.com/v1/candles/minutes/60?market=" +
-//       "KRW-BTC" +
-//       "&count=10"
-//   )
-//   .then((res) => {
-//     console.log(res.data);
-//   })
-//   .catch((err) => console.error(err));
-
-const stringToJson = (e) => {
-  const enc = new TextDecoder("utf-8");
-  const arr = new Uint8Array(e);
-  const str_d = enc.decode(arr);
-  return JSON.parse(str_d);
-};
-
-const ws = new WebSocket("wss://api.upbit.com/websocket/v1");
-
-ws.binaryType = "arraybuffer";
-
-ws.filterRequest = () => {
-  const ticker = [
-    "BTC",
-    "ETH",
-    "XRP",
-    "ADA",
-    "DOGE",
-    "GRS",
-    "POLY",
-    "ETC",
-    "HUNT",
-    "CHZ",
-    "WEMIX",
-    "HIVE",
-    "ALGO",
-    "ATOM",
-    "PUNDIX",
-    "SOL",
-    "SAND",
-    "MATIC",
-    "LINK",
-    "TRX",
-    "BCH",
-    "WAVES",
-    "XEC",
-    "AXS",
-    "MANA",
-    "REP",
-    "NEAR",
-    "FLOW",
-    "MBL",
-    "KNC",
-    "PLA",
-    "EOS",
-    "XLM",
-    "ZIL",
-    "BTG",
-    "KAVA",
-    "STEEM",
-    "MFT",
-    "QKC",
-    "DOT",
-    "GLM",
-    "XEM",
-    "LOOM",
-    "BORA",
-    "SXP",
-    "NEO",
-    "AERGO",
-    "STX",
-    "VET",
-    "HBAR",
-    "WAXP",
-    "JST",
-    "UPP",
-    "GMT",
-    "AVAX",
-    "ANKR",
-    "NU",
-    "SRM",
-    "ORBS",
-    "STORJ",
-    "STPT",
-    "HUM",
-    "TFUEL",
-    "AAVE",
-    "MTL",
-    "ARK",
-    "POWR",
-    "BSV",
-    "STRAX",
-    "STMX",
-    "CVC",
-    "RFR",
-    "THETA",
-    "ENJ",
-    "ONG",
-    "IOTA",
-    "SNT",
-    "T",
-    "TT",
-    "GAS",
-    "ZRX",
-    "ELF",
-    "MED",
-    "XTZ",
-    "LSK",
-    "BTT",
-    "AQT",
-    "SSX",
-    "DAWN",
-    "SBD",
-    "ARDR",
-    "DKA",
-    "ARDR",
-    "DKA",
-    "MOC",
-    "MLK",
-    "ONT",
-    "CELO",
-    "OMG",
-    "CBK",
-    "SC",
-    "ICX",
-    "IQ",
-    "BAT",
-    "META",
-    "TON",
-    "IOST",
-  ];
-  const addedKrwTicker = ticker.map((oneTicker) => `KRW-${oneTicker}`);
-  const toJson = JSON.stringify(addedKrwTicker);
-  const sendData = (toJson) =>
-    `
-      [ {"ticket":"UNIQUE_TICKET_ONE"},
-        {"type":"ticker","codes": ${toJson}},
-        {"type":"orderbook","codes":${toJson}}]`;
-
-  if (ws === undefined) {
-    alert("no connect exists");
-    return;
-  }
-  ws.send(sendData(toJson));
-};
-
-ws.on("connection", function (e) {
-  console.log("@@@@@@@connection");
-  ws.filterRequest();
-});
-ws.on("close", (e) => {
-  ws.filterRequest();
-});
-ws.on("open", (e) => {
-  ws.filterRequest();
-});
-
-ws.on("message", function (e) {
-  // console.log("message@@", e);
-  const data = stringToJson(e);
-  if (data.type === "ticker") {
-    const {
-      code,
-      trade_price,
-      change,
-      change_rate,
-      change_price,
-      acc_trade_price_24h,
-    } = data;
-    const newData = {
-      code,
-      trade_price,
-      change,
-      change_rate,
-      change_price,
-      acc_trade_price_24h,
-    };
-  }
-  if (data.type === "orderbook") {
-    const { code, orderbook_units, total_ask_size, total_bid_size } = data;
-    const newData = {
-      code,
-      orderbook_units,
-      total_ask_size,
-      total_bid_size,
-    };
-  }
-});
+const ticker = [
+  "BTC",
+  "ETH",
+  "XRP",
+  "ADA",
+  "DOGE",
+  "GRS",
+  "POLY",
+  "ETC",
+  "HUNT",
+  "CHZ",
+  "WEMIX",
+  "HIVE",
+  "ALGO",
+  "ATOM",
+  "PUNDIX",
+  "SOL",
+  "SAND",
+  "MATIC",
+  "LINK",
+  "TRX",
+  "BCH",
+  "WAVES",
+  "XEC",
+  "AXS",
+  "MANA",
+  "REP",
+  "NEAR",
+  "FLOW",
+  "MBL",
+  "KNC",
+  "PLA",
+  "EOS",
+  "XLM",
+  "ZIL",
+  "BTG",
+  "KAVA",
+  "STEEM",
+  "MFT",
+  "QKC",
+  "DOT",
+  "GLM",
+  "XEM",
+  "LOOM",
+  "BORA",
+  "SXP",
+  "NEO",
+  "AERGO",
+  "STX",
+  "VET",
+  "HBAR",
+  "WAXP",
+  "JST",
+  "UPP",
+  "GMT",
+  "AVAX",
+  "ANKR",
+  "NU",
+  "SRM",
+  "ORBS",
+  "STORJ",
+  "STPT",
+  "HUM",
+  "TFUEL",
+  "AAVE",
+  "MTL",
+  "ARK",
+  "POWR",
+  "BSV",
+  "STRAX",
+  "STMX",
+  "CVC",
+  "RFR",
+  "THETA",
+  "ENJ",
+  "ONG",
+  "IOTA",
+  "SNT",
+  "T",
+  "TT",
+  "GAS",
+  "ZRX",
+  "ELF",
+  "MED",
+  "XTZ",
+  "LSK",
+  "BTT",
+  "AQT",
+  "SSX",
+  "DAWN",
+  "SBD",
+  "ARDR",
+  "DKA",
+  "ARDR",
+  "DKA",
+  "MOC",
+  "MLK",
+  "ONT",
+  "CELO",
+  "OMG",
+  "CBK",
+  "SC",
+  "ICX",
+  "IQ",
+  "BAT",
+  "META",
+  "TON",
+  "IOST",
+];

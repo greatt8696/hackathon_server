@@ -13,6 +13,15 @@ class GreenSocket {
       socket.on("greenhelloclient", (arg) => {
         console.log("greenhelloclient 받음", arg);
       });
+
+      setInterval(() =>
+        socket.emit(
+          "greenhello",
+          [100000000 * Math.random(), Date(Date.now())],
+          1
+        )
+      );
+
       socket.on("joinRoom", ({ joinRoom }) => {
         socket.join(joinRoom);
         SocketServer.to(joinRoom).emit(

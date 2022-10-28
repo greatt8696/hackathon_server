@@ -1,155 +1,140 @@
-function upbitSocket() {
-  const socket = new WebSocket("wss://api.upbit.com/websocket/v1");
-  socket.binaryType = "arraybuffer";
+const axios = require("axios");
+const { WebSocket } = require("ws");
 
-  // if (socket !== undefined) {
-  //   socket.close();
-  // }
+const COIN_LIST = [
+  "KRW-BTC",
+  "KRW-ETH",
+  "KRW-XRP",
+  "KRW-ADA",
+  "KRW-DOGE",
+  "KRW-SOL",
+];
 
-  socket.filterRequest = () => {
-    const ticker = [
-      "BTC",
-      "ETH",
-      "XRP",
-      "ADA",
-      "DOGE",
-      "GRS",
-      "POLY",
-      "ETC",
-      "HUNT",
-      "CHZ",
-      "WEMIX",
-      "HIVE",
-      "ALGO",
-      "ATOM",
-      "PUNDIX",
-      "SOL",
-      "SAND",
-      "MATIC",
-      "LINK",
-      "TRX",
-      "BCH",
-      "WAVES",
-      "XEC",
-      "AXS",
-      "MANA",
-      "REP",
-      "NEAR",
-      "FLOW",
-      "MBL",
-      "KNC",
-      "PLA",
-      "EOS",
-      "XLM",
-      "ZIL",
-      "BTG",
-      "KAVA",
-      "STEEM",
-      "MFT",
-      "QKC",
-      "DOT",
-      "GLM",
-      "XEM",
-      "LOOM",
-      "BORA",
-      "SXP",
-      "NEO",
-      "AERGO",
-      "STX",
-      "VET",
-      "HBAR",
-      "WAXP",
-      "JST",
-      "UPP",
-      "GMT",
-      "AVAX",
-      "ANKR",
-      "NU",
-      "SRM",
-      "ORBS",
-      "STORJ",
-      "STPT",
-      "HUM",
-      "TFUEL",
-      "AAVE",
-      "MTL",
-      "ARK",
-      "POWR",
-      "BSV",
-      "STRAX",
-      "STMX",
-      "CVC",
-      "RFR",
-      "THETA",
-      "ENJ",
-      "ONG",
-      "IOTA",
-      "SNT",
-      "T",
-      "TT",
-      "GAS",
-      "ZRX",
-      "ELF",
-      "MED",
-      "XTZ",
-      "LSK",
-      "BTT",
-      "AQT",
-      "SSX",
-      "DAWN",
-      "SBD",
-      "ARDR",
-      "DKA",
-      "ARDR",
-      "DKA",
-      "MOC",
-      "MLK",
-      "ONT",
-      "CELO",
-      "OMG",
-      "CBK",
-      "SC",
-      "ICX",
-      "IQ",
-      "BAT",
-      "META",
-      "TON",
-      "IOST",
-    ];
-    const addedKrwTicker = ticker.map((oneTicker) => `KRW-${oneTicker}`);
-    const toJson = JSON.stringify(addedKrwTicker);
-    const sendData = (toJson) =>
-      `
-        [ {"ticket":"UNIQUE_TICKET"}, 
-          {"type":"ticker","codes": ${toJson}},
-          {"type":"orderbook","codes":${toJson}}]`;
-    // `
-    //   [{"ticket":"UNIQUE_TICKET"},
-    //   {"type":"ticker","codes": ${toJson}},
-    //     {"type":"orderbook","codes":${toJson}},
-    //     {"type":"trade","codes": ${toJson}}]`;
+const stringToJson = (e) => {
+  const enc = new TextDecoder("utf-8");
+  const arr = new Uint8Array(e);
+  const str_d = enc.decode(arr);
+  return JSON.parse(str_d);
+};
 
-    if (socket === undefined) {
-      alert("no connect exists");
-      return;
-    }
-    socket.send(sendData(toJson));
+class ChartData {
+  constructor() {
+    this.candle = {};
+    this.list = [...COIN_LIST];
+  }
+
+  pushData = (ticker, data) => {
+    this.candle[ticker] = data;
   };
-  socket.stringToJson = (e) => {
-    const enc = new TextDecoder("utf-8");
-    const arr = new Uint8Array(e.data);
-    const str_d = enc.decode(arr);
-    return JSON.parse(str_d);
+
+  initData = async function () {
+    this.list.forEach(async (ticker) => {
+      setTimeout(async () => {
+        this.candle[ticker] = await this.getCandleData(ticker, 5, 200);
+      }, 500);
+    });
   };
-  socket.closeWS = () => {
-    if (socket !== undefined) {
-      socket.close();
-    }
+
+  getCandleData = async function (
+    token = "KRW-BTC",
+    minutes = "5",
+    count = 200
+  ) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(
+          `https://api.upbit.com/v1/candles/minutes/${minutes}?market=` +
+            `${token}` +
+            `&count=${count}`
+        )
+        .then((res) => resolve(res.data))
+        .catch((err) => reject(err));
+    });
   };
-  socket.onopen = (e) => {
-    socket.filterRequest();
-  };
-  return socket;
 }
 
-module.exports = { upbitSocket };
+class CoinData {
+  constructor() {
+    this.price = {};
+    this.orderBook = {};
+    this.list = [...COIN_LIST];
+    this.ws = false;
+  }
+
+  updatePrice = (ticker, data) => {
+    this.price[ticker] = data;
+  };
+
+  updateOrderBook = function (ticker, data) {
+    this.orderBook[ticker] = data;
+  };
+
+  initSocket = function () {
+    this.ws = new WebSocket("wss://api.upbit.com/websocket/v1");
+
+    this.ws.binaryType = "arraybuffer";
+
+    this.ws.filterRequest = () => {
+      const ticker = [...COIN_LIST];
+      const addedKrwTicker = ticker.map((oneTicker) => `KRW-${oneTicker}`);
+      const toJson = JSON.stringify(addedKrwTicker);
+      const sendData = (toJson) =>
+        `
+      [ {"ticket":"UNIQUE_TICKET_ONE"},
+        {"type":"ticker","codes": ${toJson}},
+        {"type":"orderbook","codes":${toJson}}]`;
+
+      if (this.ws === undefined) {
+        alert("no connect exists");
+        return;
+      }
+      this.ws.send(sendData(toJson));
+    };
+
+    this.ws.on("connection", function (e) {
+      console.log("@@@@@@@connection");
+      this.ws.filterRequest();
+    });
+    this.ws.on("close", (e) => {
+      this.ws.filterRequest();
+    });
+    this.ws.on("open", (e) => {
+      this.ws.filterRequest();
+    });
+    this.ws.on("message", function (e) {
+      const data = stringToJson(e);
+      console.log("@@@@@@@@@@@@", data);
+      if (data.type === "ticker") {
+        const {
+          code,
+          trade_price,
+          change,
+          change_rate,
+          change_price,
+          acc_trade_price_24h,
+        } = data;
+        const newData = {
+          code,
+          trade_price,
+          change,
+          change_rate,
+          change_price,
+          acc_trade_price_24h,
+        };
+        updatePrice(code, newData);
+      }
+      if (data.type === "orderbook") {
+        const { code, orderbook_units, total_ask_size, total_bid_size } = data;
+        const newData = {
+          code,
+          orderbook_units,
+          total_ask_size,
+          total_bid_size,
+        };
+        updateOrderBook(code, newData);
+      }
+    });
+  };
+}
+
+module.exports = { CoinData, ChartData };

@@ -35,4 +35,13 @@ app.get("/user", async (req, res) => {
   res.send(user);
 });
 
-const chartData = require("./chartData");
+// const { ChartData, CoinData } = require("./chartData");
+
+// const chartData = new ChartData();
+// chartData.initData();
+// setTimeout(() => {
+//   Object.values(chartData.candle).map((value) => console.log(value.length));
+// }, 1000);
+
+// const coinData = new CoinData();
+// coinData.initSocket();

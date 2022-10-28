@@ -112,7 +112,6 @@ class WalletManager {
     const list = this.wallet.coins.immer();
     const isExistTicker = list.find(({ ticker }) => ticker === inputTicker);
     // coins 리스트에 없을경우 coinlist 추가
-
     if (!isExistTicker) {
       // console.log("before findCoinList", inputTicker);
       const findCoinList = await CoinList.find({ ticker: inputTicker });

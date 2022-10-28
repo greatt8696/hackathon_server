@@ -78,9 +78,9 @@ module.exports = {
       name: "폐유리병",
       ticker: "GLSSB",
       sub: {
-        white: { name: "백색", ticker: "GLSSB_WHITE" },
-        brown: { name: "갈색", ticker: "GLSSB_BROWN" },
-        green: { name: "청녹색", ticker: "GLSSB_GREEN" },
+        white: { name: "백색", ticker: "GLSSB_CULLET_WHITE" },
+        brown: { name: "갈색", ticker: "GLSSB_CULLET_BROWN" },
+        green: { name: "청녹색", ticker: "GLSSB_CULLET_GREEN" },
       },
     },
     metal: {
