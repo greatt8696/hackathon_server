@@ -7,7 +7,9 @@ const COIN_LIST = [
   "KRW-XRP",
   "KRW-ADA",
   "KRW-DOGE",
+  "KRW-ATOM",
   "KRW-SOL",
+  "KRW-ETC",
 ];
 
 const stringToJson = (e) => {
@@ -58,82 +60,54 @@ class CoinData {
     this.price = {};
     this.orderBook = {};
     this.list = [...COIN_LIST];
-    this.ws = false;
+    this.ws = this.initSocket();
   }
 
-  updatePrice = (ticker, data) => {
+  updatePrice = function (ticker, data) {
+    console.log(data);
     this.price[ticker] = data;
   };
 
   updateOrderBook = function (ticker, data) {
+    console.log(data);
     this.orderBook[ticker] = data;
   };
 
   initSocket = function () {
-    this.ws = new WebSocket("wss://api.upbit.com/websocket/v1");
+    const ws = new WebSocket("wss://api.upbit.com/websocket/v1");
 
-    this.ws.binaryType = "arraybuffer";
+    ws.binaryType = "arraybuffer";
 
-    this.ws.filterRequest = () => {
+    const filterRequest = function () {
       const ticker = [...COIN_LIST];
-      const addedKrwTicker = ticker.map((oneTicker) => `KRW-${oneTicker}`);
+      const addedKrwTicker = ticker.map((oneTicker) => `${oneTicker}`);
       const toJson = JSON.stringify(addedKrwTicker);
       const sendData = (toJson) =>
         `
-      [ {"ticket":"UNIQUE_TICKET_ONE"},
-        {"type":"ticker","codes": ${toJson}},
-        {"type":"orderbook","codes":${toJson}}]`;
+    [ {"ticket":"UNIQUE_TICKET_ONE"},
+      {"type":"ticker","codes": ${toJson}},
+      {"type":"orderbook","codes":${toJson}}]`;
 
-      if (this.ws === undefined) {
+      if (ws === undefined) {
         alert("no connect exists");
         return;
       }
-      this.ws.send(sendData(toJson));
+      ws.send(sendData(toJson));
     };
 
-    this.ws.on("connection", function (e) {
+    ws.on("connection", function (e) {
       console.log("@@@@@@@connection");
-      this.ws.filterRequest();
+      filterRequest();
     });
-    this.ws.on("close", (e) => {
-      this.ws.filterRequest();
+
+    ws.on("close", function (e) {
+      filterRequest();
     });
-    this.ws.on("open", (e) => {
-      this.ws.filterRequest();
+
+    ws.on("open", function (e) {
+      filterRequest();
     });
-    this.ws.on("message", function (e) {
-      const data = stringToJson(e);
-      console.log("@@@@@@@@@@@@", data);
-      if (data.type === "ticker") {
-        const {
-          code,
-          trade_price,
-          change,
-          change_rate,
-          change_price,
-          acc_trade_price_24h,
-        } = data;
-        const newData = {
-          code,
-          trade_price,
-          change,
-          change_rate,
-          change_price,
-          acc_trade_price_24h,
-        };
-        updatePrice(code, newData);
-      }
-      if (data.type === "orderbook") {
-        const { code, orderbook_units, total_ask_size, total_bid_size } = data;
-        const newData = {
-          code,
-          orderbook_units,
-          total_ask_size,
-          total_bid_size,
-        };
-        updateOrderBook(code, newData);
-      }
-    });
+    return ws;
   };
 }
 
