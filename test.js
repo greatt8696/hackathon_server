@@ -272,17 +272,11 @@ ws.filterRequest = () => {
       [ {"ticket":"UNIQUE_TICKET_ONE"},
         {"type":"ticker","codes": ${toJson}},
         {"type":"orderbook","codes":${toJson}}]`;
-  // `
-  //   [{"ticket":"UNIQUE_TICKET"},
-  //   {"type":"ticker","codes": ${toJson}},
-  //     {"type":"orderbook","codes":${toJson}},
-  //     {"type":"trade","codes": ${toJson}}]`;
 
   if (ws === undefined) {
     alert("no connect exists");
     return;
   }
-  console.log(sendData(toJson));
   ws.send(sendData(toJson));
 };
 
@@ -317,7 +311,6 @@ ws.on("message", function (e) {
       change_price,
       acc_trade_price_24h,
     };
-    console.log(newData);
   }
   if (data.type === "orderbook") {
     const { code, orderbook_units, total_ask_size, total_bid_size } = data;
@@ -327,6 +320,5 @@ ws.on("message", function (e) {
       total_ask_size,
       total_bid_size,
     };
-    console.log(newData);
   }
 });

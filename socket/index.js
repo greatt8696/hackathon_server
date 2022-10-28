@@ -16,8 +16,6 @@ const socketServer = new Server(SOCKET_PORT, {
       "http://localhost:3000",
       "http://localhost:3636",
     ],
-    // or with an array of origins
-    // origin: ["https://my-frontend.com", "https://my-other-frontend.com", "http://localhost:3000"],
     credentials: true,
   },
 });
@@ -27,10 +25,6 @@ socketServer.on("connection", (socket) => {
   socket.on("helloclient", (arg) => {
     console.log("helloclient 받음", arg);
   });
-
-  setInterval(() =>
-    socket.emit("hello", [100000000 * Math.random(), Date(Date.now())], 1000)
-  );
 
   socket.on("joinRoom", ({ joinRoom }) => {
     socket.join(joinRoom);
