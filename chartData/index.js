@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { WebSocket } = require("ws");
+const { tradeSocket } = require("../socket");
 
 const COIN_LIST = [
   "KRW-BTC",
@@ -10,19 +11,14 @@ const COIN_LIST = [
   "KRW-ATOM",
   "KRW-SOL",
   "KRW-ETC",
+  "KRW-MATIC",
 ];
 
-const stringToJson = (e) => {
-  const enc = new TextDecoder("utf-8");
-  const arr = new Uint8Array(e);
-  const str_d = enc.decode(arr);
-  return JSON.parse(str_d);
-};
-
-class ChartData {
+class CandleData {
   constructor() {
     this.candle = {};
     this.list = [...COIN_LIST];
+    this.initData();
   }
 
   pushData = (ticker, data) => {
@@ -30,12 +26,67 @@ class ChartData {
   };
 
   initData = async function () {
-    this.list.forEach(async (ticker) => {
+    await this.list.forEach(async (ticker) => {
       setTimeout(async () => {
-        this.candle[ticker] = await this.getCandleData(ticker, 5, 200);
+        const { data, token } = await this.getCandleData(ticker, 5, 80);
+        const ohlc = [];
+        const volume = [];
+        data.forEach(
+          ({
+            opening_price,
+            high_price,
+            low_price,
+            trade_price,
+            timestamp,
+            candle_acc_trade_price,
+          }) => {
+            ohlc.push({
+              x: timestamp,
+              y: [opening_price, high_price, low_price, trade_price],
+            });
+            volume.push({
+              x: timestamp,
+              y: candle_acc_trade_price,
+            });
+          }
+        );
+        this.candle[token] = { ohlc, volume };
       }, 500);
     });
   };
+
+  updateOneCandle = async function () {
+    await this.list.forEach(async (ticker) => {
+      setTimeout(async () => {
+        const { data, token } = await this.getCandleData(ticker, 5, 2);
+        const ohlc = [];
+        const volume = [];
+        data.forEach(
+          ({
+            opening_price,
+            high_price,
+            low_price,
+            trade_price,
+            timestamp,
+            candle_acc_trade_price,
+          }) => {
+            ohlc.push({
+              x: timestamp,
+              y: [opening_price, high_price, low_price, trade_price],
+            });
+            volume.push({
+              x: timestamp,
+              y: candle_acc_trade_price,
+            });
+          }
+        );
+        console.log(data);
+        this.candle[token] = { ohlc, volume };
+      }, 500);
+    });
+  };
+
+  getInitCandle = () => this.candle;
 
   getCandleData = async function (
     token = "KRW-BTC",
@@ -49,7 +100,7 @@ class ChartData {
             `${token}` +
             `&count=${count}`
         )
-        .then((res) => resolve(res.data))
+        .then((res) => resolve({ data: res.data, token }))
         .catch((err) => reject(err));
     });
   };
@@ -63,13 +114,13 @@ class CoinData {
     this.ws = this.initSocket();
   }
 
+  getInitPrice = () => this.price;
+
   updatePrice = function (ticker, data) {
-    console.log(data);
     this.price[ticker] = data;
   };
 
   updateOrderBook = function (ticker, data) {
-    console.log(data);
     this.orderBook[ticker] = data;
   };
 
@@ -96,7 +147,6 @@ class CoinData {
     };
 
     ws.on("connection", function (e) {
-      console.log("@@@@@@@connection");
       filterRequest();
     });
 
@@ -111,4 +161,54 @@ class CoinData {
   };
 }
 
-module.exports = { CoinData, ChartData };
+const stringToJson = (e) => {
+  const enc = new TextDecoder("utf-8");
+  const arr = new Uint8Array(e);
+  const str_d = enc.decode(arr);
+  return JSON.parse(str_d);
+};
+const candleData = new CandleData();
+
+const coinData = new CoinData();
+coinData.initSocket();
+
+coinData.ws.on("message", function (e) {
+  const data = stringToJson(e);
+  if (data.type === "ticker") {
+    const {
+      code,
+      trade_price,
+      change,
+      change_rate,
+      change_price,
+      acc_trade_price_24h,
+    } = data;
+    const newData = {
+      code,
+      trade_price,
+      change,
+      change_rate,
+      change_price,
+      acc_trade_price_24h,
+    };
+    coinData.updatePrice(code, newData);
+    tradeSocket.emit("price", newData);
+  }
+  if (data.type === "orderbook") {
+    const { code, orderbook_units, total_ask_size, total_bid_size } = data;
+    const newData = {
+      code,
+      orderbook_units,
+      total_ask_size,
+      total_bid_size,
+    };
+    coinData.updateOrderBook(code, newData);
+    tradeSocket.emit("order", newData);
+  }
+});
+
+setInterval(() => {
+  tradeSocket.emit("candle", candleData.candle);
+}, 100);
+
+module.exports = { coinData, candleData };
