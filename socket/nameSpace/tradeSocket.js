@@ -14,13 +14,13 @@ class TradeSocket {
         console.log("tradehelloclient 받음", arg);
       });
 
-      setInterval(() =>
-        socket.emit(
-          "trade",
-          ["trade", 100000000 * Math.random(), Date(Date.now())],
-          10
-        )
-      );
+      // setInterval(() =>
+      //   socket.emit(
+      //     "trade",
+      //     ["trade", 100000000 * Math.random(), Date(Date.now())],
+      //     10
+      //   )
+      // );
     });
   }
   emit = function (emitName, paylaod) {

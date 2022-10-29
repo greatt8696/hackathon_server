@@ -1,4 +1,4 @@
-require("dotenv").config();
+ require("dotenv").config();
 
 require("./util/jsonUtil");
 
@@ -33,8 +33,6 @@ app.listen(3600, () => console.log("Running Server"));
 connectDb().then(() => {
   initDb();
 });
-app.get("/user", async (req, res) => {
-  res.send(user);
-});
+
 
 const coinDatas = { coin: coinData, candle: candleData };

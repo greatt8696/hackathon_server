@@ -14,11 +14,14 @@ const COIN_LIST = [
   "KRW-MATIC",
 ];
 
+const CANDLE_SIZE = 80;
+
 class CandleData {
   constructor() {
     this.candle = {};
     this.list = [...COIN_LIST];
     this.initData();
+    this.lastCandleTime = "";
   }
 
   pushData = (ticker, data) => {
@@ -28,18 +31,28 @@ class CandleData {
   initData = async function () {
     await this.list.forEach(async (ticker) => {
       setTimeout(async () => {
-        const { data, token } = await this.getCandleData(ticker, 5, 80);
+        const { data, token } = await this.getCandleData(
+          ticker,
+          1,
+          CANDLE_SIZE
+        );
+        let temp = "";
         const ohlc = [];
         const volume = [];
         data.forEach(
-          ({
-            opening_price,
-            high_price,
-            low_price,
-            trade_price,
-            timestamp,
-            candle_acc_trade_price,
-          }) => {
+          (
+            {
+              opening_price,
+              high_price,
+              low_price,
+              trade_price,
+              timestamp,
+              candle_acc_trade_price,
+              candle_date_time_kst,
+            },
+            idx
+          ) => {
+            if (idx === 0) temp = candle_date_time_kst;
             ohlc.push({
               x: timestamp,
               y: [opening_price, high_price, low_price, trade_price],
@@ -51,38 +64,51 @@ class CandleData {
           }
         );
         this.candle[token] = { ohlc, volume };
+        this.lastCandle = temp;
       }, 500);
     });
   };
 
   updateOneCandle = async function () {
     await this.list.forEach(async (ticker) => {
-      setTimeout(async () => {
-        const { data, token } = await this.getCandleData(ticker, 5, 2);
-        const ohlc = [];
-        const volume = [];
-        data.forEach(
-          ({
-            opening_price,
-            high_price,
-            low_price,
-            trade_price,
-            timestamp,
-            candle_acc_trade_price,
-          }) => {
-            ohlc.push({
-              x: timestamp,
-              y: [opening_price, high_price, low_price, trade_price],
-            });
-            volume.push({
-              x: timestamp,
-              y: candle_acc_trade_price,
-            });
-          }
-        );
-        console.log(data);
-        this.candle[token] = { ohlc, volume };
-      }, 500);
+      try {
+        setTimeout(async () => {
+          const { data, token } = await this.getCandleData(ticker, 1, 1);
+          const ohlc = [];
+          const volume = [];
+          let temp = "";
+          data.forEach(
+            ({
+              opening_price,
+              high_price,
+              low_price,
+              trade_price,
+              timestamp,
+              candle_acc_trade_price,
+              candle_date_time_kst,
+            }) => {
+              if (this.lastCandleTime !== candle_date_time_kst) {
+                ohlc.push({
+                  x: timestamp,
+                  y: [opening_price, high_price, low_price, trade_price],
+                });
+                volume.push({
+                  x: timestamp,
+                  y: candle_acc_trade_price,
+                });
+                this.candle[token].ohlc.pop();
+                this.candle[token].volume.pop();
+              }
+              temp = candle_date_time_kst;
+            }
+          );
+          this.lastCandleTime = temp;
+          this.candle[token] = {
+            ohlc: [...ohlc, ...this.candle[token].ohlc],
+            volume: [...volume, ...this.candle[token].volume],
+          };
+        }, 1200);
+      } catch (error) {console.error(error);}
     });
   };
 
@@ -105,7 +131,6 @@ class CandleData {
     });
   };
 }
-
 class CoinData {
   constructor() {
     this.price = {};
@@ -193,6 +218,26 @@ coinData.ws.on("message", function (e) {
     };
     coinData.updatePrice(code, newData);
     tradeSocket.emit("price", newData);
+
+    if (candleData.candle[code] !== undefined) {
+      const newCoin = candleData.candle[code]?.ohlc;
+      if (newCoin[0].x - newCoin[1].x > 40000) {
+        const delOhlc = newCoin.shift();
+        delOhlc.y[3] = trade_price;
+        if (delOhlc.y[1] < trade_price) delOhlc.y[1] = trade_price;
+        else if (delOhlc.y[2] > trade_price) delOhlc.y[2] = trade_price;
+        const ohlc = [{ ...delOhlc, y: delOhlc.y }, ...newCoin];
+        candleData.candle[code] = { ...candleData.candle[code], ohlc };
+      } else {
+        const delOhlc = newCoin[0];
+        delOhlc.y[3] = trade_price;
+        if (delOhlc.y[1] < trade_price) delOhlc.y[1] = trade_price;
+        else if (delOhlc.y[2] > trade_price) delOhlc.y[2] = trade_price;
+        const ohlc = [...newCoin];
+        candleData.candle[code] = { ...candleData.candle[code], ohlc };
+      }
+      tradeSocket.emit("candle", candleData.candle);
+    }
   }
   if (data.type === "orderbook") {
     const { code, orderbook_units, total_ask_size, total_bid_size } = data;
@@ -207,8 +252,10 @@ coinData.ws.on("message", function (e) {
   }
 });
 
-setInterval(() => {
+setInterval(async () => {
+  await candleData.updateOneCandle();
   tradeSocket.emit("candle", candleData.candle);
-}, 100);
+  console.log(candleData.candle["KRW-BTC"].volume.length);
+}, 12000);
 
 module.exports = { coinData, candleData };

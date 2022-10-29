@@ -17,6 +17,8 @@ const socketServer = new Server(SOCKET_PORT, {
       "http://192.168.0.106",
       "http://192.168.0.106:3600",
       "http://192.168.0.106:3636",
+      "http://119.149.42.142:3600",
+      "http://119.149.42.142:3636",
       "http://192.168.0.106:3000",
     ],
     credentials: true,
