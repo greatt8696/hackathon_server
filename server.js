@@ -11,6 +11,7 @@ const app = express();
 const cors = require("cors");
 
 const recycleRouter = require("./routers/recycle");
+const userRouter = require("./routers/user");
 
 const SERVER_PORT = process.env.SERVER_PORT;
 
@@ -31,7 +32,7 @@ app.use(
 
 app.use(express.static("public"));
 
-app.listen(3600, () => console.log("Running Server"));
+app.listen(SERVER_PORT, () => console.log("Running Server"));
 
 connectDb().then(() => {
   initDb();
@@ -39,10 +40,10 @@ connectDb().then(() => {
 
 app.use(express.json());
 
-
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/recycle", recycleRouter);
+app.use("/user", userRouter);
 
 
 const coinDatas = { coin: coinData, candle: candleData };
