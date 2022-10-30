@@ -1,16 +1,19 @@
 const { candleData, coinData } = require("../chartData");
 const { RecycleLedger, User } = require("../mongoose/models");
 const { transferObjectID } = require("../mongoose/util");
+const { userData } = require("../userData");
 
 const router = require("express").Router();
 
 router.get("/getUsers", async (req, res) => {
-  const users = await User.findAll();
-  res.send(users);
+  const users = userData.getAllUsers();
+  console.log("/getUsers: send"+users.length);
+  res.status(202).send(users);
 });
+
 router.get("/getCoinsPrice", (req, res) => {
   const coinsPrice = coinData.getInitPrice();
-  res.send(coinsPrice);
+  res.status(202).send(coinsPrice);
 });
 
 router.post("/getRecycle", async (req, res) => {
@@ -23,7 +26,7 @@ router.post("/getRecycle", async (req, res) => {
     "to.recycleWalletId": fromId,
   });
   const [resultFrom, resultTo] = await Promise.all([from, to]);
-  res.send({ resultFrom, resultTo });
+  res.status(202).send({ resultFrom, resultTo });
 });
 
 router.post("/getRecycle1", async (req, res) => {
@@ -40,7 +43,7 @@ router.post("/getRecycle1", async (req, res) => {
     ],
   });
 
-  res.send({ test });
+  res.status(202).send({ test });
 });
 
 module.exports = router;

@@ -19,8 +19,6 @@ const { connectDb, initDb } = require("./mongoose");
 
 const socketServer = require("./socket");
 
-const { coinData, candleData } = require("./chartData");
-
 console.log("Socket init ");
 
 app.use(
@@ -44,6 +42,3 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/recycle", recycleRouter);
 app.use("/user", userRouter);
-
-
-const coinDatas = { coin: coinData, candle: candleData };
