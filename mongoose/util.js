@@ -71,6 +71,8 @@ const makeCoin = (inputObj) => {
   return { ...defaultInput, ...inputObj, balance: inputObj.balance.toFixed(3) };
 };
 
+const transferObjectID = (stringId) => ObjectId(stringId);
+
 module.exports = {
   makeId,
   makeUid,
@@ -81,4 +83,5 @@ module.exports = {
   makeBotObjectId,
   makeCoin,
   createObjectId,
+  transferObjectID,
 };
