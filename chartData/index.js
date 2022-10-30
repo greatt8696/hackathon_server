@@ -14,8 +14,8 @@ const COIN_LIST = [
   "KRW-MATIC",
 ];
 
-const CANDLE_SIZE = 80;
-
+const CANDLE_SIZE = 180;
+ 
 class CandleData {
   constructor() {
     this.candle = {};
