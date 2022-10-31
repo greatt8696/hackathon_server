@@ -3,7 +3,7 @@ const { Schema } = mongoDb;
 
 const RecycleLedgerSchema = new Schema({
   recycleTransactionId: { type: String, index: true },
-  type: { type: String },
+  type: { type: Object },
   from: { type: Object },
   to: { type: Object },
   totalweigth: { type: Number },

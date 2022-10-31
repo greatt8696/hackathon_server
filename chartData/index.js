@@ -15,7 +15,7 @@ const COIN_LIST = [
 ];
 
 const CANDLE_SIZE = 80;
-const MINUTE = 5;
+const MINUTE = 15;
 
 class CandleData {
   constructor() {

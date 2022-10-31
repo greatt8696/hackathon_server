@@ -61,6 +61,7 @@ module.exports = {
       sub: {
         pp: { name: "펠렛-PP", ticker: "PELL_PP" },
         ps: { name: "펠렛-PS", ticker: "PELL_PS" },
+        pe: { name: "펠렛-PE", ticker: "PELL_PE" },
         pvc: { name: "펠렛-PVC", ticker: "PELL_PVC" },
         abs: { name: "펠렛-ABS", ticker: "PELL_ABS" },
       },
@@ -88,8 +89,15 @@ module.exports = {
       ticker: "MTAL",
       sub: {
         scrap: { name: "철스크랩", ticker: "MTAL_SCRP" },
-        can: { name: "철캔", ticker: "MTAL_BROWN" },
+        can: { name: "철캔", ticker: "MTAL_CAN" },
         AluminumCan: { name: "알루미늄캔", ticker: "MTAL_ALCAN" },
+      },
+    },
+    eps: {
+      name: "EPS",
+      ticker: "EPS",
+      sub: {
+        ingot: { name: "EPS잉곳", ticker: "EPS_ING" },
       },
     },
     tire: {
