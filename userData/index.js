@@ -22,6 +22,8 @@ class UserData {
 
   getInitCandle = () => this.candle;
 
+  getUser = (uid)=>{ }
+
   getuserDatas = async function (
     token = "KRW-BTC",
     minutes = MINUTE,
