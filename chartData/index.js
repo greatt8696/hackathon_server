@@ -15,7 +15,7 @@ const COIN_LIST = [
 ];
 
 const CANDLE_SIZE = 80;
-const MINUTE = 5
+const MINUTE = 5;
 
 class CandleData {
   constructor() {
@@ -26,7 +26,7 @@ class CandleData {
   }
 
   pushData = (ticker, data) => {
-    this.candle[ticker] = data; 
+    this.candle[ticker] = data;
   };
 
   initData = async function () {
