@@ -111,7 +111,7 @@ const transferAssetBot = async (allUsers) => {
     } catch (error) {
       console.log(error);
     }
-  }, 50);
+  }, 500);
 };
 
 const recycleTransferBot = async (allUsers) => {
