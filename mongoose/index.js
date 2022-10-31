@@ -111,7 +111,7 @@ const transferAssetBot = async (allUsers) => {
     } catch (error) {
       console.log(error);
     }
-  }, 500);
+  }, 50);
 };
 
 const recycleTransferBot = async (allUsers) => {
@@ -425,7 +425,6 @@ const recycleTransferBot = async (allUsers) => {
     const incinerateRandom = chooseRandom(incinerateUsers);
     const processRandom = chooseRandom(processUsers);
 
-    await recycleBotAction.create();
     await recycleBotAction.create();
     await recycleBotAction.collect();
     await recycleBotAction.select();

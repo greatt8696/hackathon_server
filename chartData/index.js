@@ -226,6 +226,7 @@ coinData.ws.on("message", function (e) {
     if (lastPrice !== trade_price) {
       coinData.updatePrice(code, newData);
       tradeSocket.emit("price", newData);
+      //console.log("@@@",coinData.price);
     }
 
     if (candleData.candle[code] !== undefined) {

@@ -1,3 +1,5 @@
+const { coinData } = require("./chartData");
+
 const randomDatas = {};
 
 const EXCHANGE = {
@@ -11,6 +13,86 @@ const EXCHANGE = {
   울산거래소: "EXC_ULSAN",
   대구거래소: "EXC_DAEGU",
 };
+
+console.log(coinData.getInitPrice());
+
+const test = {
+  "KRW-BTC": {
+    code: "KRW-BTC",
+    trade_price: 29060000,
+    change: "RISE",
+    change_rate: 0.0035569983,
+    change_price: 103000,
+    acc_trade_price_24h: 86459853106.47781,
+  },
+  "KRW-ETH": {
+    code: "KRW-ETH",
+    trade_price: 2269000,
+    change: "RISE",
+    change_rate: 0.0170327208,
+    change_price: 38000,
+    acc_trade_price_24h: 63268014754.94978,
+  },
+  "KRW-XRP": {
+    code: "KRW-XRP",
+    trade_price: 642,
+    change: "FALL",
+    change_rate: 0.00155521,
+    change_price: 1,
+    acc_trade_price_24h: 131846139210.87674,
+  },
+  "KRW-ADA": {
+    code: "KRW-ADA",
+    trade_price: 576,
+    change: "RISE",
+    change_rate: 0.0123022847,
+    change_price: 7,
+    acc_trade_price_24h: 33439524231.315807,
+  },
+  "KRW-DOGE": {
+    code: "KRW-DOGE",
+    trade_price: 169,
+    change: "RISE",
+    change_rate: 0.0242424242,
+    change_price: 4,
+    acc_trade_price_24h: 926679901655.345,
+  },
+  "KRW-ATOM": {
+    code: "KRW-ATOM",
+    trade_price: 19950,
+    change: "RISE",
+    change_rate: 0.0209825998,
+    change_price: 410,
+    acc_trade_price_24h: 29223949998.467876,
+  },
+  "KRW-SOL": {
+    code: "KRW-SOL",
+    trade_price: 47350,
+    change: "RISE",
+    change_rate: 0.0302436902,
+    change_price: 1390,
+    acc_trade_price_24h: 20288243620.64604,
+  },
+  "KRW-ETC": {
+    code: "KRW-ETC",
+    trade_price: 34550,
+    change: "RISE",
+    change_rate: 0.0026117237,
+    change_price: 90,
+    acc_trade_price_24h: 47743897540.002014,
+  },
+  "KRW-MATIC": {
+    code: "KRW-MATIC",
+    trade_price: 1290,
+    change: "RISE",
+    change_rate: 0.0078125,
+    change_price: 10,
+    acc_trade_price_24h: 12491191807.956783,
+  },
+};
+
+const random = Object.keys(test).map(({ change_rate }) => change_rate);
+console.log(random);
 
 const basedDatas = [
   { ticker: "PAPE_NEWS", data: [136, 0.0, -6.6, 11.0, 0.7, 6.6, -4.4, -2.2] },
@@ -47,8 +129,8 @@ const basedDatas = [
   { ticker: "TIRE_POWD", data: [250, -4.0, 8.0, 4.4] },
 ];
 
-const randoms = Object.keys(EXCHANGE).map((key, idx) => {
-  randomDatas[key].data = basedDatas[idx];
-});
+// const randoms = Object.keys(EXCHANGE).map((key, idx) => {
+//   randomDatas[key].data = basedDatas[idx];
+// });
 
-console.log(randomDatas);
+// console.log(randomDatas);
