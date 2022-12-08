@@ -8,9 +8,10 @@ router.get("/getCharts", (req, res) => {
   const charts = candleData.getInitCandle();
   res.send(charts);
 });
+
 router.get("/getCoinsPrice", (req, res) => {
   const coinsPrice = coinData.getInitPrice();
-  res.send(coinsPrice);
+  res.send();
 });
 
 router.post("/getRecycle", async (req, res) => {
@@ -39,7 +40,7 @@ router.post("/getRecycle1", async (req, res) => {
       },
     ],
   });
-  
+
   res.send({ test });
 });
 

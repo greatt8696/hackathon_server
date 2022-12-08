@@ -197,10 +197,10 @@ const stringToJson = (e) => {
   const str_d = enc.decode(arr);
   return JSON.parse(str_d);
 };
-const candleData = new CandleData();
-
 const coinData = new CoinData();
 coinData.initSocket();
+
+const candleData = new CandleData();
 
 coinData.ws.on("message", function (e) {
   const data = stringToJson(e);
